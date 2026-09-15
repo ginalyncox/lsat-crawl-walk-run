@@ -27,6 +27,20 @@ const traps=[
   {name:'Necessary / sufficient mix-up',looks:'Treats a required condition as enough, or a enough condition as required.',tempting:'Logic words feel precise even when reversed.',ask:'Is this required, or is it enough?',example:'“You must be registered to vote” becomes “If registered, you definitely vote.”'},
   {name:'Unsupported comparison',looks:'Ranks, prefers, or equates things the stimulus never compared.',tempting:'Comparatives sound evaluative and conclusive.',ask:'Did the stimulus actually compare these?',example:'Stimulus: Method A works. Choice: Method A works better than Method B.'}
 ];
+const translations=[
+  {term:'if',plain:'This introduces a sufficient condition — enough to guarantee the other side.',symbol:'If A → B',watch:'Do not reverse it. Knowing B does not prove A.'},
+  {term:'only if',plain:'This introduces a necessary condition — required, but not by itself enough.',symbol:'A only if B  ⇒  A → B',watch:'“Only if” points to the required piece, not the trigger.'},
+  {term:'unless',plain:'Treat “unless” as “if not.” It names the exception that blocks the result.',symbol:'A unless B  ⇒  If not B → A',watch:'Translate before diagramming. Do not invent extras.'},
+  {term:'except',plain:'Names the case left out of a rule or claim.',symbol:'All X except Y',watch:'The exception is not automatically the opposite rule for everything else.'},
+  {term:'some',plain:'At least one. Maybe more. Maybe almost all. No upper limit is promised.',symbol:'Some A are B',watch:'“Some” does not mean “most,” and it does not block “all.”'},
+  {term:'most',plain:'More than half. Could be 51% or 99%.',symbol:'Most A are B',watch:'Most is stronger than some, weaker than all.'},
+  {term:'all',plain:'Every member of the group. No exceptions unless stated.',symbol:'All A are B  ⇒  A → B',watch:'All is strong. Look for overclaim traps.'},
+  {term:'not all',plain:'At least one is left out. Equivalent to “some are not.”',symbol:'Not all A are B  ⇒  Some A are not B',watch:'“Not all” does not mean “none.”'},
+  {term:'required / necessary',plain:'Needed for the result. Without it, the result fails. It may not be enough alone.',symbol:'B is required for A  ⇒  A → B',watch:'Necessary ≠ sufficient.'},
+  {term:'sufficient',plain:'Enough to guarantee the result. Other routes may also work.',symbol:'A is sufficient for B  ⇒  A → B',watch:'Sufficient ≠ necessary.'},
+  {term:'presupposes / assumes',plain:'The argument needs this to be true, even if it never says it out loud.',symbol:'Argument → needed assumption',watch:'Ask: if this were false, would the reasoning collapse?'},
+  {term:'depends on / relies on',plain:'The conclusion’s support hangs on this link or claim.',symbol:'Support depends on X',watch:'Find the load-bearing piece, not a decorative detail.'}
+];
 const missLabels={
   reasoning:'Reasoning',
   reading:'Reading',
@@ -111,6 +125,11 @@ function renderDecisionMat(){
 function renderTrapDeck(){
   $('trapDeckGrid').innerHTML=traps.map((t,i)=>`<article class="trap-print-card"><p class="eyebrow">Trap ${i+1}</p><h3>${escapeHtml(t.name)}</h3><p><strong>Looks like:</strong> ${escapeHtml(t.looks)}</p><p><strong>Why tempting:</strong> ${escapeHtml(t.tempting)}</p><p><strong>Ask:</strong> ${escapeHtml(t.ask)}</p><p><strong>Example:</strong> ${escapeHtml(t.example)}</p></article>`).join('');
 }
+function renderTranslations(filter=''){
+  const q=filter.trim().toLowerCase();
+  const list=translations.filter(t=>!q||[t.term,t.plain,t.symbol,t.watch].join(' ').toLowerCase().includes(q));
+  $('translationGrid').innerHTML=list.length?list.map(t=>`<article class="translation-card"><h3>${escapeHtml(t.term)}</h3><p><strong>Plain meaning:</strong> ${escapeHtml(t.plain)}</p><p><strong>Compact form:</strong> ${escapeHtml(t.symbol)}</p><p><strong>Watch for:</strong> ${escapeHtml(t.watch)}</p></article>`).join(''):'<p class="empty">No terms match that filter.</p>';
+}
 function printSection(sectionId){
   document.body.dataset.print=sectionId;
   const cleanup=()=>{delete document.body.dataset.print;window.removeEventListener('afterprint',cleanup)};
@@ -120,8 +139,11 @@ function printSection(sectionId){
 }
 $('printDecisionMat').onclick=()=>printSection('decisionMat');
 $('printTrapDeck').onclick=()=>printSection('trapDeck');
+$('printTranslationDict').onclick=()=>printSection('translationDict');
+$('translationFilter').addEventListener('input',e=>renderTranslations(e.target.value));
 renderDecisionMat();
 renderTrapDeck();
+renderTranslations();
 
 let pCount=4;
 function renderParagraphs(){
