@@ -110,3 +110,28 @@ body[data-print] .preflight-grid label{break-inside:avoid;border:1px solid #444;
 body[data-print] .progress-row{break-inside:avoid;border:1px solid #444;background:#fff}
 body[data-print="writingPreflight"] .preflight-tip{border:1px solid #444}
 body[data-print="progressBoard"] .progress-legend{color:#000}
+
+.today-actions{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center}
+.inline-label{display:flex;align-items:center;gap:.4rem;font-weight:700;font-size:.9rem}
+.inline-label select{font:inherit;padding:.4rem .55rem;border:1px solid var(--line);border-radius:8px;background:#fff}
+.practice-idle,.practice-active,.practice-summary{margin-top:.5rem}
+.practice-steps-preview{margin:.4rem 0 0;padding-left:1.2rem}
+.practice-status{display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:center;justify-content:space-between;margin-bottom:.8rem}
+.practice-timer{margin:0;font-weight:800}
+.practice-timer.over{color:var(--danger)}
+.practice-checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem .8rem;margin-bottom:.9rem}
+.practice-checklist label{display:flex;gap:.45rem;align-items:flex-start;background:var(--soft);padding:.65rem .75rem;border-radius:10px}
+.practice-result{margin-bottom:.8rem}
+.study-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem}
+.study-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:1rem;min-height:170px;break-inside:avoid}
+.study-card h3{margin:.15rem 0 .55rem;font-size:1.12rem}
+.study-card p{margin:.35rem 0}
+@media(max-width:900px){.practice-checklist,.study-card-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.practice-checklist,.study-card-grid{grid-template-columns:1fr}}
+
+body[data-print="studyCards"] #studyCards{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
+
+body[data-print="studyCards"] .section-head .button-row,
+body[data-print="studyCards"] .inline-label{display:none!important}
+body[data-print] .study-card-grid{grid-template-columns:repeat(3,1fr);gap:.45rem}
+body[data-print] .study-card{border:1px solid #444;border-radius:0;background:#fff;min-height:140px}

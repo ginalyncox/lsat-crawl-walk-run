@@ -331,11 +331,160 @@ $('clearAutopsy').onclick=()=>{
   toast('Argument worksheet cleared');
 };
 $('proofButton').onclick=()=>toast('Facts first. Did the stimulus actually say it?');
-$('oneQuestion').onclick=()=>{
-  document.querySelector('.framework').scrollIntoView({behavior:'smooth'});
-  $('job').focus();
-  toast('One question. Accuracy first.');
-};
+$('oneQuestion').onclick=()=>{ $('practiceMode').value='1'; startPracticeSession(); };
+$('fiveQuestion').onclick=()=>{ $('practiceMode').value='5'; startPracticeSession(); };
+
+const practice={active:false,total:1,index:0,timing:'untimed',startedAt:0,timerId:null,results:[]};
+function practiceStorageKey(){return 'lsat-practice-session'}
+function savePractice(){localStorage.setItem(practiceStorageKey(),JSON.stringify({active:practice.active,total:practice.total,index:practice.index,timing:practice.timing,startedAt:practice.startedAt,results:practice.results}))}
+function loadPractice(){
+  try{return JSON.parse(localStorage.getItem(practiceStorageKey())||'null')}catch(e){return null}
+}
+function clearPracticeTimer(){if(practice.timerId){clearInterval(practice.timerId);practice.timerId=null}}
+function formatMMSS(ms){
+  const s=Math.max(0,Math.floor(ms/1000));
+  const m=Math.floor(s/60); const r=s%60;
+  return `${m}:${String(r).padStart(2,'0')}`;
+}
+function updatePracticeTimer(){
+  const el=$('practiceTimer');
+  if(!el)return;
+  if(practice.timing!=='timed'){el.textContent='Untimed';return}
+  const elapsed=Date.now()-practice.startedAt;
+  const budget=practice.total*90*1000;
+  const remaining=budget-elapsed;
+  el.textContent=remaining>=0?`Time left ${formatMMSS(remaining)}`:`Over by ${formatMMSS(-remaining)}`;
+  el.classList.toggle('over', remaining<0);
+}
+function showPracticeView(which){
+  $('practiceIdle').hidden=which!=='idle';
+  $('practiceIdleControls').hidden=which!=='idle';
+  $('practiceActive').hidden=which!=='active';
+  $('practiceSummary').hidden=which!=='summary';
+}
+function resetPracticeForm(){
+  document.querySelectorAll('#practiceChecklist input[type=checkbox]').forEach(c=>c.checked=false);
+  $('practiceResult').value='';
+  $('practiceMiss').value='';
+  $('practiceNote').value='';
+}
+function renderPracticeProgress(){
+  $('practiceProgress').textContent=`Question ${practice.index+1} of ${practice.total}`;
+  updatePracticeTimer();
+}
+function startPracticeSession(){
+  clearPracticeTimer();
+  practice.active=true;
+  practice.total=Math.max(1, Math.min(5, +$('practiceMode').value||1));
+  practice.index=0;
+  practice.timing=$('practiceTiming').value||'untimed';
+  practice.startedAt=Date.now();
+  practice.results=[];
+  resetPracticeForm();
+  showPracticeView('active');
+  renderPracticeProgress();
+  if(practice.timing==='timed'){
+    practice.timerId=setInterval(updatePracticeTimer,1000);
+  }
+  savePractice();
+  document.getElementById('practiceSession').scrollIntoView({behavior:'smooth'});
+  toast(practice.total===1?'One-question session started':'Five-question mini-set started');
+}
+function endPracticeSession(showSummary=true){
+  clearPracticeTimer();
+  practice.active=false;
+  savePractice();
+  if(showSummary){
+    renderPracticeSummary();
+    showPracticeView('summary');
+  }else{
+    showPracticeView('idle');
+  }
+}
+function renderPracticeSummary(){
+  const res=practice.results;
+  const correct=res.filter(r=>r.result==='correct').length;
+  const wrong=res.filter(r=>r.result==='wrong').length;
+  const unsure=res.filter(r=>r.result==='unsure').length;
+  const missCounts={};
+  res.forEach(r=>{if(r.miss)missCounts[r.miss]=(missCounts[r.miss]||0)+1});
+  const missHtml=Object.keys(missCounts).length
+    ? `<ul>${Object.entries(missCounts).map(([k,v])=>`<li><strong>${escapeHtml(missLabels[k]||k)}</strong>: ${v}</li>`).join('')}</ul>`
+    : '<p>No miss-type tags logged.</p>';
+  const focus=Object.entries(missCounts).sort((a,b)=>b[1]-a[1])[0];
+  const focusText=focus?`Next focus: ${missLabels[focus[0]]||focus[0]}.`:'Next focus: keep externalizing JOB → GAP before answer choices.';
+  $('practiceSummaryBody').innerHTML=`
+    <p><strong>Completed:</strong> ${res.length} / ${practice.total}</p>
+    <p><strong>Correct:</strong> ${correct} · <strong>Wrong:</strong> ${wrong} · <strong>Flagged:</strong> ${unsure}</p>
+    <div><p class="eyebrow">Miss patterns</p>${missHtml}</div>
+    <p>${escapeHtml(focusText)}</p>
+    <p class="hint">Accuracy first. Speed only after the process is repeatable.</p>`;
+}
+function completeCurrentPracticeQ(flagged=false){
+  if(!practice.active)return;
+  const result=flagged?'unsure':($('practiceResult').value||'unsure');
+  if(!flagged && !$('practiceResult').value){toast('Choose a result first');return}
+  const steps={};
+  document.querySelectorAll('#practiceChecklist input[type=checkbox]').forEach(c=>{steps[c.dataset.step]=c.checked});
+  practice.results.push({
+    q:practice.index+1,
+    result,
+    miss:$('practiceMiss').value||'',
+    note:$('practiceNote').value.trim(),
+    steps,
+    at:new Date().toISOString()
+  });
+  if(practice.index+1>=practice.total){
+    endPracticeSession(true);
+    toast('Session complete');
+    return;
+  }
+  practice.index+=1;
+  resetPracticeForm();
+  renderPracticeProgress();
+  savePractice();
+  toast(`Question ${practice.index+1} of ${practice.total}`);
+}
+$('startPractice').onclick=startPracticeSession;
+$('endPractice').onclick=()=>{if(confirm('End this practice session?'))endPracticeSession(true)};
+$('completePracticeQ').onclick=()=>completeCurrentPracticeQ(false);
+$('flagPractice').onclick=()=>completeCurrentPracticeQ(true);
+$('openAutopsy').onclick=()=>{document.getElementById('framework').scrollIntoView({behavior:'smooth'});$('job').focus()};
+$('restartPractice').onclick=()=>showPracticeView('idle');
+(function resumePractice(){
+  const saved=loadPractice();
+  if(!saved||!saved.active){showPracticeView('idle');return}
+  Object.assign(practice,saved);
+  showPracticeView('active');
+  renderPracticeProgress();
+  if(practice.timing==='timed')practice.timerId=setInterval(updatePracticeTimer,1000);
+})();
+
+function studyCardHTML(card){
+  return `<article class="study-card"><p class="eyebrow">${escapeHtml(card.kind)}</p><h3>${escapeHtml(card.title)}</h3>${card.body}</article>`;
+}
+function buildStudyCards(deck){
+  if(deck==='jobs')return jobs.map(j=>({kind:'JOB',title:j.name,body:`<p><strong>Stem cue:</strong> ${escapeHtml(j.stem)}</p><p><strong>JOB:</strong> ${escapeHtml(j.job)}</p><p><strong>Ask:</strong> ${escapeHtml(j.check)}</p>`}));
+  if(deck==='traps')return traps.map(t=>({kind:'TRAP',title:t.name,body:`<p><strong>Looks like:</strong> ${escapeHtml(t.looks)}</p><p><strong>Why tempting:</strong> ${escapeHtml(t.tempting)}</p><p><strong>Ask:</strong> ${escapeHtml(t.ask)}</p>`}));
+  if(deck==='translations')return translations.map(t=>({kind:'TRANSLATION',title:t.term,body:`<p><strong>Plain:</strong> ${escapeHtml(t.plain)}</p><p><strong>Compact:</strong> ${escapeHtml(t.symbol)}</p><p><strong>Watch:</strong> ${escapeHtml(t.watch)}</p>`}));
+  if(deck==='logic')return logicTiles.map(t=>({kind:'LOGIC TILE',title:t.label,body:`<p>${escapeHtml(t.plain)}</p><p><strong>Hint:</strong> ${escapeHtml(t.hint)}</p>`}));
+  // mix: first 4 of each family truncated for a printable pack
+  return [
+    ...buildStudyCards('jobs').slice(0,4),
+    ...buildStudyCards('traps').slice(0,4),
+    ...buildStudyCards('translations').slice(0,4),
+    ...buildStudyCards('logic').slice(0,4)
+  ];
+}
+function renderStudyCards(){
+  const deck=$('studyCardDeck').value||'jobs';
+  const cards=buildStudyCards(deck);
+  $('studyCardGrid').innerHTML=cards.map(studyCardHTML).join('');
+}
+$('studyCardDeck').addEventListener('change',renderStudyCards);
+$('printStudyCards').onclick=()=>printSection('studyCards');
+renderStudyCards();
+
 
 function getLog(){return JSON.parse(localStorage.getItem('lsat-errors')||'[]')}
 function renderLog(){
@@ -377,7 +526,8 @@ function exportStudyData(){
     exportedAt:new Date().toISOString(),
     phase:localStorage.getItem('lsat-phase')||'crawl',
     draft:JSON.parse(localStorage.getItem('lsat-draft')||'{}'),
-    errors:getLog()
+    errors:getLog(),
+    practice:loadPractice()
   };
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
