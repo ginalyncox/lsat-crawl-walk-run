@@ -41,6 +41,19 @@ const translations=[
   {term:'presupposes / assumes',plain:'The argument needs this to be true, even if it never says it out loud.',symbol:'Argument → needed assumption',watch:'Ask: if this were false, would the reasoning collapse?'},
   {term:'depends on / relies on',plain:'The conclusion’s support hangs on this link or claim.',symbol:'Support depends on X',watch:'Find the load-bearing piece, not a decorative detail.'}
 ];
+const logicTiles=[
+  {id:'if',label:'IF',plain:'Enough to trigger the result.',hint:'Sufficient condition'},
+  {id:'then',label:'THEN',plain:'What follows when the trigger is met.',hint:'Result / consequent'},
+  {id:'not',label:'NOT',plain:'Negates the next piece.',hint:'Flip true/false'},
+  {id:'only-if',label:'ONLY IF',plain:'Names what is required.',hint:'Necessary condition'},
+  {id:'unless',label:'UNLESS',plain:'Treat as “if not.”',hint:'Exception framing'},
+  {id:'some',label:'SOME',plain:'At least one. No upper limit promised.',hint:'Existential'},
+  {id:'most',label:'MOST',plain:'More than half.',hint:'Majority'},
+  {id:'all',label:'ALL',plain:'Every member. No leftover cases.',hint:'Universal'},
+  {id:'a',label:'A',plain:'First claim or group.',hint:'Variable'},
+  {id:'b',label:'B',plain:'Second claim or group.',hint:'Variable'}
+];
+let logicChain=[];
 const missLabels={
   reasoning:'Reasoning',
   reading:'Reading',
@@ -49,7 +62,7 @@ const missLabels={
   'question-job':'Question-job identification'
 };
 const $=id=>document.getElementById(id);
-const fields=['job','given','conclusion','gap','target','credited','autopsyRule','mainPoint','viewAuthor','viewA','viewB','viewAgrees','viewDisagrees','viewWhy','viewAuthorMove','fooled','attractive','overlooked','nextRule','missType'];
+const fields=['job','given','conclusion','gap','target','credited','autopsyRule','mainPoint','viewAuthor','viewA','viewB','viewAgrees','viewDisagrees','viewWhy','viewAuthorMove','logicSentence','fooled','attractive','overlooked','nextRule','missType'];
 const autopsyFields=['job','given','conclusion','gap','target','choiceA','choiceB','choiceC','choiceD','choiceE','credited','autopsyRule'];
 let saveTimer=null;
 
@@ -66,7 +79,7 @@ function setSaveState(mode,detail){
 
 function saveDraft(){
   setSaveState('saving');
-  const d={paragraphCount:pCount};
+  const d={paragraphCount:pCount,logicChain:logicChain.slice()};
   fields.forEach(id=>{if($(id))d[id]=$(id).value});
   document.querySelectorAll('[data-write]').forEach(x=>d[x.dataset.write]=x.value);
   localStorage.setItem('lsat-draft',JSON.stringify(d));
@@ -147,6 +160,72 @@ renderTranslations();
 $('printViewpointTracker').onclick=()=>printSection('viewpointTracker');
 const viewpointFields=['viewAuthor','viewA','viewB','viewAgrees','viewDisagrees','viewWhy','viewAuthorMove'];
 $('clearViewpoints').onclick=()=>{viewpointFields.forEach(id=>{const el=$(id);if(el)el.value=''});saveDraft();toast('Viewpoint tracker cleared')};
+
+function logicMeaning(ids){
+  const labels=ids.map(id=>logicTiles.find(t=>t.id===id)?.label||id);
+  if(!labels.length)return 'Click tiles to build a relationship.';
+  const s=labels.join(' → ');
+  // lightweight plain readings for common patterns
+  const joined=labels.join(' ');
+  if(joined==='IF A THEN B')return 'Plain reading: A is enough to get B.';
+  if(joined==='A ONLY IF B')return 'Plain reading: A requires B. A → B.';
+  if(joined==='A UNLESS B')return 'Plain reading: If not B, then A.';
+  if(joined==='IF NOT A THEN NOT B')return 'Plain reading: Without A, B does not follow from this rule alone — check the original conditional carefully.';
+  if(joined==='ALL A B'||joined==='ALL A THEN B')return 'Plain reading: Every A is B.';
+  if(joined==='SOME A B')return 'Plain reading: At least one A is B.';
+  if(joined==='MOST A B')return 'Plain reading: More than half of A are B.';
+  return `Arrangement: ${s}`;
+}
+function saveLogicChain(){
+  const d=JSON.parse(localStorage.getItem('lsat-draft')||'{}');
+  d.logicChain=logicChain.slice();
+  localStorage.setItem('lsat-draft',JSON.stringify(d));
+  setSaveState('saved');
+}
+function restoreLogicChain(){
+  const d=JSON.parse(localStorage.getItem('lsat-draft')||'{}');
+  if(Array.isArray(d.logicChain))logicChain=d.logicChain.filter(id=>logicTiles.some(t=>t.id===id)).slice(0,12);
+}
+function renderLogicBank(){
+  $('logicBank').innerHTML=logicTiles.map(t=>`<button type="button" class="logic-tile" data-tile="${t.id}" role="listitem" aria-label="Add ${t.label} tile"><strong>${escapeHtml(t.label)}</strong><small>${escapeHtml(t.hint)}</small></button>`).join('');
+}
+function renderLogicChain(){
+  const box=$('logicChain');
+  if(!logicChain.length){
+    box.innerHTML='<p class="empty">Empty chain — start with IF, ONLY IF, UNLESS, SOME, MOST, or ALL.</p>';
+  }else{
+    box.innerHTML=logicChain.map((id,i)=>{
+      const t=logicTiles.find(x=>x.id===id);
+      return `<button type="button" class="logic-tile on-chain" data-index="${i}" aria-label="Remove ${t.label}"><strong>${escapeHtml(t.label)}</strong><small>tap to remove</small></button>`;
+    }).join('<span class="logic-arrow" aria-hidden="true">→</span>');
+  }
+  $('logicPlain').textContent=logicMeaning(logicChain);
+}
+function renderLogicPrint(){
+  $('logicPrintGrid').innerHTML=logicTiles.map(t=>`<article class="logic-print-tile"><strong>${escapeHtml(t.label)}</strong><span>${escapeHtml(t.plain)}</span><small>${escapeHtml(t.hint)}</small></article>`).join('');
+}
+$('logicBank').addEventListener('click',e=>{
+  const btn=e.target.closest('[data-tile]');
+  if(!btn)return;
+  if(logicChain.length>=12){toast('Chain is full — remove a tile first');return}
+  logicChain.push(btn.dataset.tile);
+  renderLogicChain();
+  saveLogicChain();
+});
+$('logicChain').addEventListener('click',e=>{
+  const btn=e.target.closest('[data-index]');
+  if(!btn)return;
+  logicChain.splice(+btn.dataset.index,1);
+  renderLogicChain();
+  saveLogicChain();
+});
+$('clearLogicChain').onclick=()=>{logicChain=[];renderLogicChain();saveLogicChain();toast('Logic chain cleared')};
+$('printLogicTiles').onclick=()=>printSection('logicTiles');
+restoreLogicChain();
+renderLogicBank();
+renderLogicChain();
+renderLogicPrint();
+
 
 let pCount=4;
 function renderParagraphs(){

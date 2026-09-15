@@ -25,6 +25,7 @@ Two reset questions run through the app: **What is my job RIGHT NOW?** and **Whe
 - Printable Wrong-Answer Trap Deck (cut-apart cards)
 - Printable LR Translation Dictionary (plain language first, symbols second)
 - RC Viewpoint Tracker (author / scholars / agree-disagree / why)
+- Conditional Logic Tiles (interactive chain + printable cut-apart tiles)
 - Aphantasia-friendly RC verbal passage mapper
 - Argumentative Writing preflight worksheet
 - Mistake Detective with miss-type classification + persistent local error log
@@ -48,7 +49,7 @@ No build step or dependencies are required. Open `index.html` in a browser, or s
 
 ## Roadmap
 
-Next candidates include conditional-logic tiles, Crawl/Walk/Run progress board, timed practice modes, and richer miss-pattern analytics.
+Next candidates include a printable Writing Preflight sheet, Crawl/Walk/Run progress board, timed practice modes, and richer miss-pattern analytics.
 
 ## Disclaimer
 

@@ -33,6 +33,7 @@
     <a href="#trapDeck">Wrong-Answer Trap Deck</a>
     <a href="#translationDict">LR Translation Dictionary</a>
     <a href="#viewpointTracker">RC Viewpoint Tracker</a>
+    <a href="#logicTiles">Conditional Logic Tiles</a>
     <a href="#framework">Argument Autopsy</a>
     <a href="#errorLogSection">Error Log</a>
   </nav>
@@ -184,6 +185,38 @@
         <label><b>WHY</b><span>Why does the disagreement matter to the author’s purpose?</span><textarea id="viewWhy" placeholder="Why the author stages this conflict"></textarea></label>
       </div>
       <label class="wide"><b>Author move</b><span>The author is mainly doing ___ because ___.</span><textarea id="viewAuthorMove" placeholder="e.g., The author presents B to correct A’s overclaim."></textarea></label>
+    </section>
+
+    <section class="panel study-aid" id="logicTiles" aria-labelledby="logicTilesTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Printable + interactive study aid</p>
+          <h2 id="logicTilesTitle">Conditional Logic Tiles</h2>
+          <p class="hint">Build the relationship outside your head. Click tiles to arrange them, then say the meaning in plain language.</p>
+        </div>
+        <div class="button-row compact no-print">
+          <button id="clearLogicChain" class="ghost">Clear chain</button>
+          <button id="printLogicTiles" class="ghost">Print Tiles</button>
+        </div>
+      </div>
+
+      <div class="logic-workspace no-print">
+        <div>
+          <p class="eyebrow">Tile bank</p>
+          <div class="logic-bank" id="logicBank" role="list"></div>
+        </div>
+        <div>
+          <p class="eyebrow">Your chain</p>
+          <div class="logic-chain" id="logicChain" aria-live="polite"></div>
+          <p id="logicPlain" class="logic-plain"></p>
+          <label class="wide"><b>Say it in one sentence</b><span>What does this arrangement claim?</span><textarea id="logicSentence" placeholder="e.g., If the permit is valid, then the workshop may open."></textarea></label>
+        </div>
+      </div>
+
+      <div class="logic-print-pack" id="logicPrintPack" aria-label="Printable logic tiles">
+        <p class="eyebrow print-only">Cut apart and rearrange on paper</p>
+        <div class="logic-print-grid" id="logicPrintGrid"></div>
+      </div>
     </section>
 
 

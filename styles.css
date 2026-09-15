@@ -29,7 +29,8 @@ body[data-print] main > section{display:none!important}
 body[data-print="decisionMat"] #decisionMat,
 body[data-print="trapDeck"] #trapDeck,
 body[data-print="translationDict"] #translationDict,
-body[data-print="viewpointTracker"] #viewpointTracker{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
+body[data-print="viewpointTracker"] #viewpointTracker,
+body[data-print="logicTiles"] #logicTiles{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
 body[data-print] .decision-mat th,
 body[data-print] .decision-mat td{border:1px solid #444;padding:.45rem}
 body[data-print] .trap-deck{grid-template-columns:repeat(2,1fr);gap:.5rem}
@@ -60,3 +61,25 @@ body[data-print] .translation-card{break-inside:avoid;border:1px solid #444;bord
 
 body[data-print] .viewpoint-grid{grid-template-columns:repeat(2,1fr);gap:.5rem}
 body[data-print] .viewpoint-grid label{break-inside:avoid;border:1px solid #444;background:#fff}
+
+.logic-workspace{display:grid;grid-template-columns:1fr 1.2fr;gap:1rem;margin-bottom:1rem}
+.logic-bank,.logic-chain{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center;min-height:4.5rem;padding:.75rem;background:var(--soft);border-radius:12px;border:1px dashed var(--line)}
+.logic-tile{border:2px solid var(--ink);background:#fff;border-radius:10px;padding:.55rem .7rem;cursor:pointer;font:inherit;min-width:4.8rem;text-align:left}
+.logic-tile strong{display:block;font-size:1rem;letter-spacing:.04em}
+.logic-tile small{display:block;color:var(--muted);font-size:.72rem;margin-top:.15rem}
+.logic-tile:focus{outline:4px solid var(--focus);outline-offset:2px}
+.logic-tile.on-chain{background:var(--focus)}
+.logic-arrow{font-weight:900;color:var(--muted)}
+.logic-plain{margin:.7rem 0 0;font-weight:700}
+.logic-print-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.55rem}
+.logic-print-tile{border:1px solid var(--line);border-radius:10px;padding:.8rem;background:var(--soft);min-height:110px}
+.logic-print-tile strong{display:block;font-size:1.15rem;margin-bottom:.35rem;letter-spacing:.04em}
+.logic-print-tile span{display:block;margin-bottom:.35rem}
+.logic-print-tile small{color:var(--muted)}
+.print-only{display:none}
+@media(max-width:900px){.logic-workspace{grid-template-columns:1fr}.logic-print-grid{grid-template-columns:repeat(2,1fr)}}
+
+body[data-print="logicTiles"] .logic-workspace{display:none!important}
+body[data-print="logicTiles"] .print-only{display:block!important}
+body[data-print] .logic-print-grid{grid-template-columns:repeat(4,1fr);gap:.4rem}
+body[data-print] .logic-print-tile{break-inside:avoid;border:1px solid #444;border-radius:0;background:#fff;min-height:90px}
