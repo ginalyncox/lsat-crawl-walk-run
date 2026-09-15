@@ -32,6 +32,7 @@
     <a href="#decisionMat">LR Decision Mat</a>
     <a href="#trapDeck">Wrong-Answer Trap Deck</a>
     <a href="#translationDict">LR Translation Dictionary</a>
+    <a href="#viewpointTracker">RC Viewpoint Tracker</a>
     <a href="#framework">Argument Autopsy</a>
     <a href="#errorLogSection">Error Log</a>
   </nav>
@@ -158,6 +159,33 @@
       <div class="button-row"><button id="addParagraph" class="ghost">+ Add paragraph</button><button id="removeParagraph" class="ghost">− Remove</button></div>
       <label class="wide"><b>Main point in one sentence</b><span>The author is mainly doing ___ because ___.</span><textarea id="mainPoint"></textarea></label>
     </section>
+
+    <section class="panel study-aid" id="viewpointTracker" aria-labelledby="viewpointTrackerTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Reading Comprehension</p>
+          <h2 id="viewpointTrackerTitle">RC Viewpoint Tracker</h2>
+          <p class="hint">Track who thinks what. No mental movie required — just labels, agreement, and why.</p>
+        </div>
+        <div class="button-row compact no-print">
+          <button id="clearViewpoints" class="ghost">Clear tracker</button>
+          <button id="printViewpointTracker" class="ghost">Print Tracker</button>
+        </div>
+      </div>
+      <div class="viewpoint-prompts" aria-label="RC check questions">
+        <p><strong>Ask:</strong> Whose view is this? Why did the author include it? What changed at the transition?</p>
+      </div>
+      <div class="viewpoint-grid">
+        <label><b>AUTHOR</b><span>What does the author claim or emphasize?</span><textarea id="viewAuthor" placeholder="Author’s stance in one sentence"></textarea></label>
+        <label><b>THEORY / SCHOLAR A</b><span>What does Viewpoint A say?</span><textarea id="viewA" placeholder="Scholar / theory A"></textarea></label>
+        <label><b>THEORY / SCHOLAR B</b><span>What does Viewpoint B say?</span><textarea id="viewB" placeholder="Scholar / theory B"></textarea></label>
+        <label><b>AGREES</b><span>Where do they overlap?</span><textarea id="viewAgrees" placeholder="Shared ground"></textarea></label>
+        <label><b>DISAGREES</b><span>Where do they split?</span><textarea id="viewDisagrees" placeholder="Point of conflict"></textarea></label>
+        <label><b>WHY</b><span>Why does the disagreement matter to the author’s purpose?</span><textarea id="viewWhy" placeholder="Why the author stages this conflict"></textarea></label>
+      </div>
+      <label class="wide"><b>Author move</b><span>The author is mainly doing ___ because ___.</span><textarea id="viewAuthorMove" placeholder="e.g., The author presents B to correct A’s overclaim."></textarea></label>
+    </section>
+
 
     <section class="two-col">
       <article class="panel">
