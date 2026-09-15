@@ -28,6 +28,8 @@ Two reset questions run through the app: **What is my job RIGHT NOW?** and **Whe
 - Conditional Logic Tiles (interactive chain + printable cut-apart tiles)
 - Printable Writing Preflight sheet (15-minute plan)
 - Crawl / Walk / Run Progress Board (skill stages, not streaks)
+- Printable Study Card Generator (JOB / trap / translation / logic decks)
+- Guided practice sessions (1-question and 5-question mini-set)
 - Aphantasia-friendly RC verbal passage mapper
 - Mistake Detective with miss-type classification + persistent local error log
 - Autosaved working notes with a visible save-state indicator
@@ -50,7 +52,7 @@ No build step or dependencies are required. Open `index.html` in a browser, or s
 
 ## Roadmap
 
-Next candidates include timed practice modes, blind-review workflow, and richer miss-pattern analytics.
+Next candidates include blind-review workflow, flag-and-return queue, and richer miss-pattern analytics.
 
 ## Disclaimer
 

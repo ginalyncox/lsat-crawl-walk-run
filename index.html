@@ -36,6 +36,8 @@
     <a href="#logicTiles">Conditional Logic Tiles</a>
     <a href="#writingPreflight">Writing Preflight</a>
     <a href="#progressBoard">Progress Board</a>
+    <a href="#studyCards">Study Cards</a>
+    <a href="#practiceSession">Practice Session</a>
     <a href="#framework">Argument Autopsy</a>
     <a href="#errorLogSection">Error Log</a>
   </nav>
@@ -47,7 +49,94 @@
         <h2 id="phaseTitle">CRAWL: Learn the reasoning</h2>
         <p id="phaseText">No speed pressure. Do one question carefully and explain why every answer is right or wrong.</p>
       </div>
-      <button id="oneQuestion" class="primary">Start one-question session</button>
+      <div class="today-actions no-print">
+        <button id="oneQuestion" class="primary">Start 1-question session</button>
+        <button id="fiveQuestion" class="ghost">Start 5-question mini-set</button>
+      </div>
+    </section>
+
+    <section class="panel study-aid" id="practiceSession" aria-labelledby="practiceSessionTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Practice workflow</p>
+          <h2 id="practiceSessionTitle">Guided Practice Session</h2>
+          <p class="hint">Use your own PrepTest questions. This guide externalizes the process — it does not ship copyrighted stems.</p>
+        </div>
+        <div class="button-row compact no-print" id="practiceIdleControls">
+          <label class="inline-label">Mode
+            <select id="practiceMode">
+              <option value="1">1 question</option>
+              <option value="5">5-question mini-set</option>
+            </select>
+          </label>
+          <label class="inline-label">Timing
+            <select id="practiceTiming">
+              <option value="untimed">Untimed</option>
+              <option value="timed">Timed (~1:30 / Q)</option>
+            </select>
+          </label>
+          <button id="startPractice" class="primary">Start session</button>
+        </div>
+      </div>
+
+      <div id="practiceIdle" class="practice-idle">
+        <ol class="practice-steps-preview">
+          <li>Name the JOB</li>
+          <li>Fill JOB → GIVEN → CONCLUSION → GAP → TARGET</li>
+          <li>Eliminate A–E</li>
+          <li>Write why the credited answer works</li>
+          <li>Log a next-time rule if you missed</li>
+        </ol>
+      </div>
+
+      <div id="practiceActive" class="practice-active" hidden>
+        <div class="practice-status">
+          <p id="practiceProgress" class="eyebrow">Question 1 of 1</p>
+          <p id="practiceTimer" class="practice-timer" aria-live="polite"></p>
+          <button id="endPractice" class="ghost no-print">End session</button>
+        </div>
+        <div class="practice-checklist" id="practiceChecklist">
+          <label><input type="checkbox" data-step="job"/> Name the JOB</label>
+          <label><input type="checkbox" data-step="autopsy"/> Fill autopsy fields</label>
+          <label><input type="checkbox" data-step="eliminate"/> Eliminate A–E</label>
+          <label><input type="checkbox" data-step="credited"/> Credited answer / why</label>
+          <label><input type="checkbox" data-step="rule"/> Next-time rule if needed</label>
+        </div>
+        <div class="practice-result two-col tight">
+          <label for="practiceResult">Result
+            <select id="practiceResult">
+              <option value="">Choose…</option>
+              <option value="correct">Correct</option>
+              <option value="wrong">Wrong</option>
+              <option value="unsure">Unsure / flagged</option>
+            </select>
+          </label>
+          <label for="practiceMiss">If wrong, miss type
+            <select id="practiceMiss">
+              <option value="">Optional…</option>
+              <option value="reasoning">Reasoning</option>
+              <option value="reading">Reading</option>
+              <option value="attention">Attention</option>
+              <option value="timing">Timing</option>
+              <option value="question-job">Question-job identification</option>
+            </select>
+          </label>
+        </div>
+        <label class="wide"><b>Quick note</b><span>What mattered on this question?</span><textarea id="practiceNote" placeholder="Optional"></textarea></label>
+        <div class="button-row no-print">
+          <button id="openAutopsy" class="ghost">Open autopsy</button>
+          <button id="flagPractice" class="ghost">Flag &amp; continue</button>
+          <button id="completePracticeQ" class="primary">Save &amp; next</button>
+        </div>
+      </div>
+
+      <div id="practiceSummary" class="practice-summary" hidden>
+        <h3>Session summary</h3>
+        <div id="practiceSummaryBody"></div>
+        <div class="button-row no-print">
+          <button id="restartPractice" class="primary">New session</button>
+        </div>
+      </div>
     </section>
 
     <section class="framework" id="framework" aria-labelledby="frameworkTitle">
@@ -284,6 +373,29 @@
         <span><b>Automatic</b> reliable with little strain</span>
       </div>
       <div class="progress-board" id="progressBoardGrid"></div>
+    </section>
+
+    <section class="panel study-aid" id="studyCards" aria-labelledby="studyCardsTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Print-friendly generator</p>
+          <h2 id="studyCardsTitle">Study Card Generator</h2>
+          <p class="hint">Build a cut-apart pack from the same JOB, trap, translation, and logic content already in the app.</p>
+        </div>
+        <div class="button-row compact no-print">
+          <label class="inline-label">Deck
+            <select id="studyCardDeck">
+              <option value="jobs">JOB cards</option>
+              <option value="traps">Trap cards</option>
+              <option value="translations">Translation cards</option>
+              <option value="logic">Logic tiles</option>
+              <option value="mix">Mixed pack</option>
+            </select>
+          </label>
+          <button id="printStudyCards" class="ghost">Print Cards</button>
+        </div>
+      </div>
+      <div class="study-card-grid" id="studyCardGrid"></div>
     </section>
 
     <section class="panel" id="errorLogSection">
