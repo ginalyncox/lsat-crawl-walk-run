@@ -591,7 +591,12 @@ function cancelBlindReview(){
   toast('Blind review canceled — adjust result or continue.');
 }
 function on(id,fn){const el=$(id);if(el)el.addEventListener('click',fn)}
-on('startPractice',startPracticeSession);
+// Event delegation backup for practice start (avoids layout/overlap click misses)
+document.getElementById('practiceSession')?.addEventListener('click',e=>{
+  const btn=e.target.closest('button');
+  if(!btn)return;
+  if(btn.id==='startPractice'){e.preventDefault();startPracticeSession()}
+});
 on('endPractice',()=>{if(confirm('End this practice session?'))endPracticeSession(true)});
 on('completePracticeQ',()=>completeCurrentPracticeQ(false));
 on('flagPractice',()=>completeCurrentPracticeQ(true));
@@ -607,9 +612,10 @@ on('restartPractice',()=>{
   if($('startComparePass'))$('startComparePass').hidden=true;
   showPracticeView('idle');
 });
-// Keep Today shortcuts in sync with the same listener style
 on('oneQuestion',()=>{ $('practiceMode').value='1'; startPracticeSession(); });
 on('fiveQuestion',()=>{ $('practiceMode').value='5'; startPracticeSession(); });
+// Expose for console debugging / recovery
+window.startPracticeSession=startPracticeSession;
 (function resumePractice(){
   renderPracticeQueues();
   const saved=loadPractice();
