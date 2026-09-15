@@ -28,6 +28,13 @@
     <button class="phase" data-phase="run" aria-pressed="false">RUN <small>perform it</small></button>
   </nav>
 
+  <nav class="aid-nav no-print" aria-label="Study aids">
+    <a href="#decisionMat">LR Decision Mat</a>
+    <a href="#trapDeck">Wrong-Answer Trap Deck</a>
+    <a href="#framework">Argument Autopsy</a>
+    <a href="#errorLogSection">Error Log</a>
+  </nav>
+
   <main id="main">
     <section class="panel today">
       <div>
@@ -38,7 +45,7 @@
       <button id="oneQuestion" class="primary">Start one-question session</button>
     </section>
 
-    <section class="framework" aria-labelledby="frameworkTitle">
+    <section class="framework" id="framework" aria-labelledby="frameworkTitle">
       <div class="section-head">
         <div>
           <p class="eyebrow">Logical Reasoning</p>
@@ -90,6 +97,41 @@
       </article>
     </section>
 
+    <section class="panel study-aid" id="decisionMat" aria-labelledby="decisionMatTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Printable study aid</p>
+          <h2 id="decisionMatTitle">LR Question-Type Decision Mat</h2>
+          <p class="hint">Match the stem to the JOB, then ask the checkpoint before you touch the answers.</p>
+        </div>
+        <div class="button-row compact no-print">
+          <button id="printDecisionMat" class="ghost">Print Decision Mat</button>
+        </div>
+      </div>
+      <div class="decision-mat-wrap">
+        <table class="decision-mat" id="decisionMatTable">
+          <thead>
+            <tr><th>If the stem looks like…</th><th>JOB</th><th>Checkpoint</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel study-aid" id="trapDeck" aria-labelledby="trapDeckTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Printable study aid</p>
+          <h2 id="trapDeckTitle">Wrong-Answer Trap Deck</h2>
+          <p class="hint">Cut into cards. For each trap: what it looks like, why it tempts, what to ask, and a short original example.</p>
+        </div>
+        <div class="button-row compact no-print">
+          <button id="printTrapDeck" class="ghost">Print Trap Deck</button>
+        </div>
+      </div>
+      <div class="trap-deck" id="trapDeckGrid"></div>
+    </section>
+
     <section class="panel rc">
       <p class="eyebrow">Reading Comprehension • no mental pictures required</p>
       <h2>Verbal Passage Map</h2>
@@ -126,7 +168,7 @@
       </article>
     </section>
 
-    <section class="panel">
+    <section class="panel" id="errorLogSection">
       <div class="section-head">
         <div><p class="eyebrow">Progress</p><h2>Error Log</h2></div>
         <div class="button-row compact">

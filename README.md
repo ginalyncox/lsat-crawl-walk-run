@@ -21,13 +21,15 @@ Two reset questions run through the app: **What is my job RIGHT NOW?** and **Whe
 - Interactive Argument Autopsy worksheet (JOB → GIVEN → CONCLUSION → GAP → TARGET, A–E elimination, credited-answer review)
 - LR question-stem / JOB decoder
 - Wrong-answer trap trainer
+- Printable LR Question-Type Decision Mat
+- Printable Wrong-Answer Trap Deck (cut-apart cards)
 - Aphantasia-friendly RC verbal passage mapper
 - Argumentative Writing preflight worksheet
 - Mistake Detective with miss-type classification + persistent local error log
 - Autosaved working notes with a visible save-state indicator
 - Export / import of local study data (JSON)
 - Responsive, keyboard-friendly, low-clutter interface
-- Print stylesheet for worksheets
+- Print stylesheet for worksheets and study cards
 
 ## Run locally
 
@@ -44,7 +46,7 @@ No build step or dependencies are required. Open `index.html` in a browser, or s
 
 ## Roadmap
 
-Next candidates include printable study-aid generators, conditional-logic translation tiles, richer progress analytics, timed practice modes, custom flashcards, RC viewpoint tracking, and import/export of the error log.
+Next candidates include an LR translation dictionary, conditional-logic tiles, RC viewpoint tracker, Crawl/Walk/Run progress board, timed practice modes, and richer miss-pattern analytics.
 
 ## Disclaimer
 
