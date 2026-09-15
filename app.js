@@ -49,7 +49,7 @@ const missLabels={
   'question-job':'Question-job identification'
 };
 const $=id=>document.getElementById(id);
-const fields=['job','given','conclusion','gap','target','credited','autopsyRule','mainPoint','fooled','attractive','overlooked','nextRule','missType'];
+const fields=['job','given','conclusion','gap','target','credited','autopsyRule','mainPoint','viewAuthor','viewA','viewB','viewAgrees','viewDisagrees','viewWhy','viewAuthorMove','fooled','attractive','overlooked','nextRule','missType'];
 const autopsyFields=['job','given','conclusion','gap','target','choiceA','choiceB','choiceC','choiceD','choiceE','credited','autopsyRule'];
 let saveTimer=null;
 
@@ -144,6 +144,9 @@ $('translationFilter').addEventListener('input',e=>renderTranslations(e.target.v
 renderDecisionMat();
 renderTrapDeck();
 renderTranslations();
+$('printViewpointTracker').onclick=()=>printSection('viewpointTracker');
+const viewpointFields=['viewAuthor','viewA','viewB','viewAgrees','viewDisagrees','viewWhy','viewAuthorMove'];
+$('clearViewpoints').onclick=()=>{viewpointFields.forEach(id=>{const el=$(id);if(el)el.value=''});saveDraft();toast('Viewpoint tracker cleared')};
 
 let pCount=4;
 function renderParagraphs(){

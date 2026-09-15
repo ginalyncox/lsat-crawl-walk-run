@@ -28,7 +28,8 @@ body[data-print] .ghost{display:none!important}
 body[data-print] main > section{display:none!important}
 body[data-print="decisionMat"] #decisionMat,
 body[data-print="trapDeck"] #trapDeck,
-body[data-print="translationDict"] #translationDict{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
+body[data-print="translationDict"] #translationDict,
+body[data-print="viewpointTracker"] #viewpointTracker{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
 body[data-print] .decision-mat th,
 body[data-print] .decision-mat td{border:1px solid #444;padding:.45rem}
 body[data-print] .trap-deck{grid-template-columns:repeat(2,1fr);gap:.5rem}
@@ -47,3 +48,15 @@ body[data-print] .trap-print-card{break-inside:avoid;border:1px solid #444;borde
 
 body[data-print] .translation-grid{grid-template-columns:repeat(2,1fr);gap:.5rem}
 body[data-print] .translation-card{break-inside:avoid;border:1px solid #444;border-radius:0;background:#fff;padding:.7rem}
+
+.viewpoint-prompts{margin:0 0 .9rem;padding:.75rem 1rem;background:var(--soft);border-left:4px solid var(--accent);border-radius:8px}
+.viewpoint-prompts p{margin:0}
+.viewpoint-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin-bottom:.8rem}
+.viewpoint-grid label{background:var(--soft);padding:.85rem;border-radius:12px}
+.viewpoint-grid b{display:block;font-size:1.02rem}
+.viewpoint-grid span{display:block;color:var(--muted);font-size:.82rem;min-height:2.4em}
+@media(max-width:900px){.viewpoint-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.viewpoint-grid{grid-template-columns:1fr}}
+
+body[data-print] .viewpoint-grid{grid-template-columns:repeat(2,1fr);gap:.5rem}
+body[data-print] .viewpoint-grid label{break-inside:avoid;border:1px solid #444;background:#fff}
