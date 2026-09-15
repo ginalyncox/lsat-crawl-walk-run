@@ -23,9 +23,9 @@
   </header>
 
   <nav class="phase-nav" aria-label="Study phases">
-    <button class="phase active" data-phase="crawl">CRAWL <small>learn it</small></button>
-    <button class="phase" data-phase="walk">WALK <small>repeat it</small></button>
-    <button class="phase" data-phase="run">RUN <small>perform it</small></button>
+    <button class="phase active" data-phase="crawl" aria-pressed="true">CRAWL <small>learn it</small></button>
+    <button class="phase" data-phase="walk" aria-pressed="false">WALK <small>repeat it</small></button>
+    <button class="phase" data-phase="run" aria-pressed="false">RUN <small>perform it</small></button>
   </nav>
 
   <main id="main">
@@ -64,7 +64,7 @@
       <article class="panel">
         <p class="eyebrow">Wrong-answer trainer</p>
         <h2>Why is this tempting?</h2>
-        <div id="trapCard" class="trap-card"></div>
+        <div id="trapCard" class="trap-card" aria-live="polite"></div>
         <div class="button-row"><button id="prevTrap" class="ghost">← Previous</button><button id="nextTrap" class="primary">Next trap →</button></div>
       </article>
     </section>
