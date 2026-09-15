@@ -31,6 +31,7 @@
   <nav class="aid-nav no-print" aria-label="Study aids">
     <a href="#decisionMat">LR Decision Mat</a>
     <a href="#trapDeck">Wrong-Answer Trap Deck</a>
+    <a href="#translationDict">LR Translation Dictionary</a>
     <a href="#framework">Argument Autopsy</a>
     <a href="#errorLogSection">Error Log</a>
   </nav>
@@ -130,6 +131,23 @@
         </div>
       </div>
       <div class="trap-deck" id="trapDeckGrid"></div>
+    </section>
+
+    <section class="panel study-aid" id="translationDict" aria-labelledby="translationDictTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Printable study aid</p>
+          <h2 id="translationDictTitle">LR Translation Dictionary</h2>
+          <p class="hint">Plain-language meaning first. Symbols second. Use this when stem or stimulus language starts to fog.</p>
+        </div>
+        <div class="button-row compact no-print">
+          <label class="filter-label" for="translationFilter">Filter
+            <input id="translationFilter" type="search" placeholder="Search term…" autocomplete="off" />
+          </label>
+          <button id="printTranslationDict" class="ghost">Print Dictionary</button>
+        </div>
+      </div>
+      <div class="translation-grid" id="translationGrid"></div>
     </section>
 
     <section class="panel rc">

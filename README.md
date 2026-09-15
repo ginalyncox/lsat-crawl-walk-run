@@ -23,6 +23,7 @@ Two reset questions run through the app: **What is my job RIGHT NOW?** and **Whe
 - Wrong-answer trap trainer
 - Printable LR Question-Type Decision Mat
 - Printable Wrong-Answer Trap Deck (cut-apart cards)
+- Printable LR Translation Dictionary (plain language first, symbols second)
 - Aphantasia-friendly RC verbal passage mapper
 - Argumentative Writing preflight worksheet
 - Mistake Detective with miss-type classification + persistent local error log
@@ -46,7 +47,7 @@ No build step or dependencies are required. Open `index.html` in a browser, or s
 
 ## Roadmap
 
-Next candidates include an LR translation dictionary, conditional-logic tiles, RC viewpoint tracker, Crawl/Walk/Run progress board, timed practice modes, and richer miss-pattern analytics.
+Next candidates include conditional-logic tiles, RC viewpoint tracker, Crawl/Walk/Run progress board, timed practice modes, and richer miss-pattern analytics.
 
 ## Disclaimer
 

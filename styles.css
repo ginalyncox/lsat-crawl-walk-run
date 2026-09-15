@@ -27,9 +27,23 @@ body[data-print] .primary,
 body[data-print] .ghost{display:none!important}
 body[data-print] main > section{display:none!important}
 body[data-print="decisionMat"] #decisionMat,
-body[data-print="trapDeck"] #trapDeck{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
+body[data-print="trapDeck"] #trapDeck,
+body[data-print="translationDict"] #translationDict{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
 body[data-print] .decision-mat th,
 body[data-print] .decision-mat td{border:1px solid #444;padding:.45rem}
 body[data-print] .trap-deck{grid-template-columns:repeat(2,1fr);gap:.5rem}
 body[data-print] .trap-print-card{break-inside:avoid;border:1px solid #444;border-radius:0;background:#fff;min-height:0;padding:.7rem}
 }
+
+
+.translation-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem}
+.translation-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:1rem}
+.translation-card h3{margin:0 0 .55rem;font-size:1.15rem}
+.translation-card p{margin:.35rem 0}
+.filter-label{display:flex;align-items:center;gap:.45rem;font-weight:700;font-size:.9rem}
+.filter-label input{font:inherit;padding:.45rem .65rem;border:1px solid var(--line);border-radius:8px;min-width:11rem;background:#fff}
+.empty{color:var(--muted);font-style:italic}
+@media(max-width:800px){.translation-grid{grid-template-columns:1fr}}
+
+body[data-print] .translation-grid{grid-template-columns:repeat(2,1fr);gap:.5rem}
+body[data-print] .translation-card{break-inside:avoid;border:1px solid #444;border-radius:0;background:#fff;padding:.7rem}
