@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="An ADHD-PI and aphantasia-friendly LSAT study system." />
+  <title>LSAT Crawl • Walk • Run</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to study tools</a>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">ADHD-PI + aphantasia friendly</p>
+      <h1>LSAT <span>Crawl • Walk • Run</span></h1>
+      <p class="lede">Understand the job. Externalize the reasoning. Prove the answer. Then add speed.</p>
+    </div>
+    <div class="reset-card" aria-label="Core reset">
+      <strong>RIGHT NOW:</strong>
+      <span>What is my job?</span>
+      <small>Interesting ≠ relevant.</small>
+    </div>
+  </header>
+
+  <nav class="phase-nav" aria-label="Study phases">
+    <button class="phase active" data-phase="crawl" aria-pressed="true">CRAWL <small>learn it</small></button>
+    <button class="phase" data-phase="walk" aria-pressed="false">WALK <small>repeat it</small></button>
+    <button class="phase" data-phase="run" aria-pressed="false">RUN <small>perform it</small></button>
+  </nav>
+
+  <main id="main">
+    <section class="panel today">
+      <div>
+        <p class="eyebrow">Minimum viable study day</p>
+        <h2 id="phaseTitle">CRAWL: Learn the reasoning</h2>
+        <p id="phaseText">No speed pressure. Do one question carefully and explain why every answer is right or wrong.</p>
+      </div>
+      <button id="oneQuestion" class="primary">Start one-question session</button>
+    </section>
+
+    <section class="framework" aria-labelledby="frameworkTitle">
+      <div class="section-head">
+        <div><p class="eyebrow">Logical Reasoning</p><h2 id="frameworkTitle">JOB → GIVEN → TARGET → GAP</h2></div>
+        <button class="ghost" id="clearAutopsy">Clear worksheet</button>
+      </div>
+      <div class="four-grid">
+        <label><b>1. JOB</b><span>What am I being asked to do?</span><textarea id="job" placeholder="e.g., Weaken the argument"></textarea></label>
+        <label><b>2. GIVEN</b><span>What did the stimulus actually establish?</span><textarea id="given" placeholder="Facts only. No additions."></textarea></label>
+        <label><b>3. TARGET</b><span>What must the correct answer accomplish?</span><textarea id="target" placeholder="Predict its function"></textarea></label>
+        <label><b>4. GAP</b><span>Where is the reasoning vulnerable?</span><textarea id="gap" placeholder="Evidence → ? → conclusion"></textarea></label>
+      </div>
+      <div class="proof-strip"><strong>STOP AT THE PERIOD.</strong><span>Before adding an idea, ask:</span><button id="proofButton">WHERE DOES IT SAY THAT?</button></div>
+    </section>
+
+    <section class="two-col">
+      <article class="panel">
+        <p class="eyebrow">Question stem decoder</p>
+        <h2>What is the JOB?</h2>
+        <label for="questionType">Question type</label>
+        <select id="questionType"></select>
+        <div id="jobCard" class="answer-card" aria-live="polite"></div>
+      </article>
+
+      <article class="panel">
+        <p class="eyebrow">Wrong-answer trainer</p>
+        <h2>Why is this tempting?</h2>
+        <div id="trapCard" class="trap-card" aria-live="polite"></div>
+        <div class="button-row"><button id="prevTrap" class="ghost">← Previous</button><button id="nextTrap" class="primary">Next trap →</button></div>
+      </article>
+    </section>
+
+    <section class="panel rc">
+      <p class="eyebrow">Reading Comprehension • no mental pictures required</p>
+      <h2>Verbal Passage Map</h2>
+      <p>Map what each paragraph <em>does</em>, not what it looks like.</p>
+      <div id="paragraphs" class="paragraphs"></div>
+      <div class="button-row"><button id="addParagraph" class="ghost">+ Add paragraph</button><button id="removeParagraph" class="ghost">− Remove</button></div>
+      <label class="wide"><b>Main point in one sentence</b><span>The author is mainly doing ___ because ___.</span><textarea id="mainPoint"></textarea></label>
+    </section>
+
+    <section class="two-col">
+      <article class="panel">
+        <p class="eyebrow">Argumentative Writing</p>
+        <h2>ISSUE → CLAIM → SUPPORT → OBJECTION → REPLY</h2>
+        <div class="writing-grid" id="writingGrid"></div>
+      </article>
+      <article class="panel">
+        <p class="eyebrow">Mistake detective</p>
+        <h2>Turn a miss into a rule</h2>
+        <label>What fooled me?<textarea id="fooled"></textarea></label>
+        <label>Why was it attractive?<textarea id="attractive"></textarea></label>
+        <label>What did I overlook?<textarea id="overlooked"></textarea></label>
+        <label>Next-time rule<textarea id="nextRule"></textarea></label>
+        <button id="saveMistake" class="primary">Save to error log</button>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><div><p class="eyebrow">Progress</p><h2>Error Log</h2></div><button id="clearLog" class="ghost">Clear log</button></div>
+      <div id="errorLog" class="error-log"></div>
+    </section>
+  </main>
+
+  <footer><strong>Accuracy → repeatability → speed.</strong><span>CRAWL → WALK → RUN</span><small>Independent study tool. Not affiliated with LSAC.</small></footer>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
