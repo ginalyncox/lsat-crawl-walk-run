@@ -51,8 +51,8 @@
         <p id="phaseText">No speed pressure. Do one question carefully and explain why every answer is right or wrong.</p>
       </div>
       <div class="today-actions no-print">
-        <button id="oneQuestion" class="primary">Start 1-question session</button>
-        <button id="fiveQuestion" class="ghost">Start 5-question mini-set</button>
+        <button type="button" id="oneQuestion" class="primary">Start 1-question session</button>
+        <button type="button" id="fiveQuestion" class="ghost">Start 5-question mini-set</button>
       </div>
     </section>
 
@@ -63,27 +63,31 @@
           <h2 id="practiceSessionTitle">Guided Practice Session</h2>
           <p class="hint">Use your own PrepTest questions. This guide externalizes the process — it does not ship copyrighted stems.</p>
         </div>
-        <div class="button-row compact no-print" id="practiceIdleControls">
-          <label class="inline-label">Mode
-            <select id="practiceMode">
-              <option value="1">1 question</option>
-              <option value="5">5-question mini-set</option>
-            </select>
-          </label>
-          <label class="inline-label">Timing
-            <select id="practiceTiming">
-              <option value="untimed">Untimed</option>
-              <option value="timed">Timed (~1:30 / Q)</option>
-              <option value="compare">Compare: untimed → timed</option>
-            </select>
-          </label>
-          <label class="inline-label">Review
-            <select id="practiceReviewMode">
-              <option value="off">No blind review</option>
-              <option value="after">Blind review after each miss/flag</option>
-            </select>
-          </label>
-          <button id="startPractice" class="primary">Start session</button>
+        <div class="practice-idle-controls no-print" id="practiceIdleControls">
+          <div class="button-row compact">
+            <label class="inline-label">Mode
+              <select id="practiceMode">
+                <option value="1">1 question</option>
+                <option value="5">5-question mini-set</option>
+              </select>
+            </label>
+            <label class="inline-label">Timing
+              <select id="practiceTiming">
+                <option value="untimed">Untimed</option>
+                <option value="timed">Timed (~1:30 / Q)</option>
+                <option value="compare">Compare: untimed → timed</option>
+              </select>
+            </label>
+            <label class="inline-label">Review
+              <select id="practiceReviewMode">
+                <option value="off">No blind review</option>
+                <option value="after">Blind review after each miss/flag</option>
+              </select>
+            </label>
+          </div>
+          <div class="button-row compact">
+            <button type="button" id="startPractice" class="primary">Start session</button>
+          </div>
         </div>
       </div>
 
@@ -101,7 +105,7 @@
         <div class="practice-status">
           <p id="practiceProgress" class="eyebrow">Question 1 of 1</p>
           <p id="practiceTimer" class="practice-timer" aria-live="polite"></p>
-          <button id="endPractice" class="ghost no-print">End session</button>
+          <button type="button" id="endPractice" class="ghost no-print">End session</button>
         </div>
         <div id="practiceActiveForm">
           <div class="practice-checklist" id="practiceChecklist">
@@ -146,15 +150,15 @@
           </div>
           <label class="wide"><b>Blind-review note</b><textarea id="practiceBlindNote" placeholder="What changed when you reviewed blind?"></textarea></label>
           <div class="button-row no-print">
-            <button id="cancelBlindReview" class="ghost">Back</button>
-            <button id="confirmBlindReview" class="primary">Finish &amp; continue</button>
+            <button type="button" id="cancelBlindReview" class="ghost">Back</button>
+            <button type="button" id="confirmBlindReview" class="primary">Finish &amp; continue</button>
           </div>
         </div>
 
         <div class="button-row no-print" id="practiceActiveActions">
-          <button id="openAutopsy" class="ghost">Open autopsy</button>
-          <button id="flagPractice" class="ghost">Flag &amp; continue</button>
-          <button id="completePracticeQ" class="primary">Save &amp; next</button>
+          <button type="button" id="openAutopsy" class="ghost">Open autopsy</button>
+          <button type="button" id="flagPractice" class="ghost">Flag &amp; continue</button>
+          <button type="button" id="completePracticeQ" class="primary">Save &amp; next</button>
         </div>
       </div>
 
@@ -162,8 +166,8 @@
         <h3>Session summary</h3>
         <div id="practiceSummaryBody"></div>
         <div class="button-row no-print">
-          <button id="startComparePass" class="ghost" hidden>Start timed comparison pass</button>
-          <button id="restartPractice" class="primary">New session</button>
+          <button type="button" id="startComparePass" class="ghost" hidden>Start timed comparison pass</button>
+          <button type="button" id="restartPractice" class="primary">New session</button>
         </div>
       </div>
 
@@ -174,7 +178,7 @@
               <p class="eyebrow">Flag &amp; return</p>
               <h3>Flagged queue</h3>
             </div>
-            <button id="clearFlagQueue" class="ghost">Clear flags</button>
+            <button type="button" id="clearFlagQueue" class="ghost">Clear flags</button>
           </div>
           <div id="flagQueueList" class="queue-list"></div>
         </div>
@@ -184,7 +188,7 @@
               <p class="eyebrow">Miss review</p>
               <h3>Miss queue</h3>
             </div>
-            <button id="clearMissQueue" class="ghost">Clear misses</button>
+            <button type="button" id="clearMissQueue" class="ghost">Clear misses</button>
           </div>
           <div id="missQueueList" class="queue-list"></div>
         </div>

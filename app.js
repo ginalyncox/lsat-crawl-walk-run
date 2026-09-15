@@ -331,9 +331,6 @@ $('clearAutopsy').onclick=()=>{
   toast('Argument worksheet cleared');
 };
 $('proofButton').onclick=()=>toast('Facts first. Did the stimulus actually say it?');
-$('oneQuestion').onclick=()=>{ $('practiceMode').value='1'; startPracticeSession(); };
-$('fiveQuestion').onclick=()=>{ $('practiceMode').value='5'; startPracticeSession(); };
-
 const PRACTICE_QUEUES_KEY='lsat-practice-queues';
 const practice={
   active:false,total:1,index:0,timing:'untimed',reviewMode:'off',
@@ -593,22 +590,26 @@ function cancelBlindReview(){
   hideBlindReview();
   toast('Blind review canceled — adjust result or continue.');
 }
-$('startPractice').onclick=startPracticeSession;
-$('endPractice').onclick=()=>{if(confirm('End this practice session?'))endPracticeSession(true)};
-$('completePracticeQ').onclick=()=>completeCurrentPracticeQ(false);
-$('flagPractice').onclick=()=>completeCurrentPracticeQ(true);
-$('confirmBlindReview').onclick=confirmBlindReview;
-$('cancelBlindReview').onclick=cancelBlindReview;
-$('startComparePass').onclick=startCompareTimedPass;
-$('clearFlagQueue').onclick=()=>clearPracticeQueue('flag');
-$('clearMissQueue').onclick=()=>clearPracticeQueue('miss');
-$('openAutopsy').onclick=()=>{document.getElementById('framework').scrollIntoView({behavior:'smooth'});$('job').focus()};
-$('restartPractice').onclick=()=>{
+function on(id,fn){const el=$(id);if(el)el.addEventListener('click',fn)}
+on('startPractice',startPracticeSession);
+on('endPractice',()=>{if(confirm('End this practice session?'))endPracticeSession(true)});
+on('completePracticeQ',()=>completeCurrentPracticeQ(false));
+on('flagPractice',()=>completeCurrentPracticeQ(true));
+on('confirmBlindReview',confirmBlindReview);
+on('cancelBlindReview',cancelBlindReview);
+on('startComparePass',startCompareTimedPass);
+on('clearFlagQueue',()=>clearPracticeQueue('flag'));
+on('clearMissQueue',()=>clearPracticeQueue('miss'));
+on('openAutopsy',()=>{document.getElementById('framework').scrollIntoView({behavior:'smooth'});$('job').focus()});
+on('restartPractice',()=>{
   practice.active=false;practice.results=[];practice.compareBaseline=[];practice.comparePass=null;
   clearPracticeTimer();hideBlindReview();savePractice();
   if($('startComparePass'))$('startComparePass').hidden=true;
   showPracticeView('idle');
-};
+});
+// Keep Today shortcuts in sync with the same listener style
+on('oneQuestion',()=>{ $('practiceMode').value='1'; startPracticeSession(); });
+on('fiveQuestion',()=>{ $('practiceMode').value='5'; startPracticeSession(); });
 (function resumePractice(){
   renderPracticeQueues();
   const saved=loadPractice();

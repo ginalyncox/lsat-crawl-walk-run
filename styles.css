@@ -114,7 +114,10 @@ body[data-print="progressBoard"] .progress-legend{color:#000}
 .today-actions{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center}
 .inline-label{display:flex;align-items:center;gap:.4rem;font-weight:700;font-size:.9rem}
 .inline-label select{font:inherit;padding:.4rem .55rem;border:1px solid var(--line);border-radius:8px;background:#fff}
+[hidden]{display:none!important}
 .practice-idle,.practice-active,.practice-summary{margin-top:.5rem}
+.practice-idle-controls{display:grid;gap:.55rem;justify-items:end}
+.practice-idle-controls .button-row{justify-content:flex-end}
 .practice-steps-preview{margin:.4rem 0 0;padding-left:1.2rem}
 .practice-status{display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:center;justify-content:space-between;margin-bottom:.8rem}
 .practice-timer{margin:0;font-weight:800}
