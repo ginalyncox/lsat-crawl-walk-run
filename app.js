@@ -61,8 +61,31 @@ const missLabels={
   timing:'Timing',
   'question-job':'Question-job identification'
 };
+const preflightFields=[
+  ['preIssue','ISSUE','What conflict or question must the essay address?'],
+  ['prePosition','MY POSITION','What do I conclude?'],
+  ['preReason1','REASON 1','Strongest support for my position'],
+  ['preReason2','REASON 2','Second support'],
+  ['preOpposition','STRONGEST OPPOSITION','Best opposing argument'],
+  ['preWhatRight','WHAT THEY GET RIGHT','Grant the fair point'],
+  ['preWhyWin','WHY I STILL WIN','Why the opposition does not defeat me'],
+  ['preOrder','ESSAY ORDER','How will I sequence the paragraphs?']
+];
+const progressSkills=[
+  ['jobID','Identify JOB from the stem'],
+  ['autopsy','JOB → GIVEN → CONCLUSION → GAP → TARGET'],
+  ['traps','Wrong-answer trap recognition'],
+  ['translation','Conditional / quantifier translation'],
+  ['rcMap','RC paragraph-role mapping'],
+  ['rcView','RC viewpoint tracking'],
+  ['writing','Writing preflight under time'],
+  ['timedLR','Timed LR accuracy']
+];
+const progressStages=['learning','untimed','timed','automatic'];
+const progressStageLabels={learning:'Learning',untimed:'Untimed',timed:'Timed',automatic:'Automatic'};
+
 const $=id=>document.getElementById(id);
-const fields=['job','given','conclusion','gap','target','credited','autopsyRule','mainPoint','viewAuthor','viewA','viewB','viewAgrees','viewDisagrees','viewWhy','viewAuthorMove','logicSentence','fooled','attractive','overlooked','nextRule','missType'];
+const fields=['job','given','conclusion','gap','target','credited','autopsyRule','mainPoint','viewAuthor','viewA','viewB','viewAgrees','viewDisagrees','viewWhy','viewAuthorMove','logicSentence','preIssue','prePosition','preReason1','preReason2','preOpposition','preWhatRight','preWhyWin','preOrder','fooled','attractive','overlooked','nextRule','missType'];
 const autopsyFields=['job','given','conclusion','gap','target','choiceA','choiceB','choiceC','choiceD','choiceE','credited','autopsyRule'];
 let saveTimer=null;
 
@@ -79,12 +102,27 @@ function setSaveState(mode,detail){
 
 function saveDraft(){
   setSaveState('saving');
-  const d={paragraphCount:pCount,logicChain:logicChain.slice()};
+  const d={paragraphCount:pCount,logicChain:logicChain.slice(),progress:getProgress()};
   fields.forEach(id=>{if($(id))d[id]=$(id).value});
   document.querySelectorAll('[data-write]').forEach(x=>d[x.dataset.write]=x.value);
   localStorage.setItem('lsat-draft',JSON.stringify(d));
   clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>setSaveState('saved'),180);
+}
+function getProgress(){
+  const out={};
+  progressSkills.forEach(([id])=>{
+    const el=document.querySelector(`input[name="progress-${id}"]:checked`);
+    out[id]=el?el.value:'learning';
+  });
+  return out;
+}
+function setProgress(data={}){
+  progressSkills.forEach(([id])=>{
+    const stage=progressStages.includes(data[id])?data[id]:'learning';
+    const el=document.querySelector(`input[name="progress-${id}"][value="${stage}"]`);
+    if(el)el.checked=true;
+  });
 }
 function restoreDraft(){
   const d=JSON.parse(localStorage.getItem('lsat-draft')||'{}');
@@ -92,11 +130,16 @@ function restoreDraft(){
     pCount=d.paragraphCount;
     renderParagraphs();
   }
+  if(Array.isArray(d.logicChain)){
+    logicChain=d.logicChain.filter(id=>logicTiles.some(t=>t.id===id)).slice(0,12);
+    if(typeof renderLogicChain==='function')renderLogicChain();
+  }
   Object.entries(d).forEach(([id,v])=>{
-    if(id==='paragraphCount')return;
+    if(id==='paragraphCount'||id==='logicChain'||id==='progress')return;
     const el=$(id)||document.querySelector(`[data-write="${id}"]`);
     if(el)el.value=v;
   });
+  if(d.progress&&typeof d.progress==='object')setProgress(d.progress);
   if(Object.keys(d).length)setSaveState('saved','Draft restored');
 }
 
@@ -253,15 +296,30 @@ $('addParagraph').onclick=()=>{if(pCount<8){pCount++;renderParagraphs();saveDraf
 $('removeParagraph').onclick=()=>{if(pCount>1){pCount--;renderParagraphs();saveDraft()}};
 renderParagraphs();
 
-['ISSUE','CLAIM','SUPPORT 1','SUPPORT 2','OBJECTION','REPLY'].forEach((name,i)=>{
+preflightFields.forEach(([id,name,hint])=>{
   const l=document.createElement('label');
-  l.textContent=name;
+  l.innerHTML=`<b>${name}</b><span>${hint}</span>`;
   const t=document.createElement('textarea');
-  t.dataset.write='write'+i;
-  t.placeholder=i===4?'Strongest opposing argument':i===5?'What does it get right, and why does it not defeat me?':'';
+  t.id=id;
+  t.placeholder=hint;
   l.appendChild(t);
-  $('writingGrid').appendChild(l);
+  $('writingPreflightGrid').appendChild(l);
 });
+function renderProgressBoard(){
+  $('progressBoardGrid').innerHTML=progressSkills.map(([id,label])=>{
+    const options=progressStages.map(stage=>`<label class="stage-option"><input type="radio" name="progress-${id}" value="${stage}" ${stage==='learning'?'checked':''}/><span>${progressStageLabels[stage]}</span></label>`).join('');
+    return `<div class="progress-row"><p class="progress-skill">${escapeHtml(label)}</p><div class="stage-options" role="radiogroup" aria-label="${escapeHtml(label)} stage">${options}</div></div>`;
+  }).join('');
+}
+renderProgressBoard();
+$('progressBoardGrid').addEventListener('change',e=>{if(e.target.matches('input[type=radio]'))saveDraft()});
+$('clearWritingPreflight').onclick=()=>{
+  preflightFields.forEach(([id])=>{const el=$(id);if(el)el.value=''});
+  saveDraft();
+  toast('Writing preflight cleared');
+};
+$('printWritingPreflight').onclick=()=>printSection('writingPreflight');
+$('printProgressBoard').onclick=()=>printSection('progressBoard');
 
 document.addEventListener('input',e=>{if(e.target.matches('textarea,input,[data-write],select'))saveDraft()});
 document.addEventListener('change',e=>{if(e.target.matches('select'))saveDraft()});
