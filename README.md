@@ -26,8 +26,9 @@ Two reset questions run through the app: **What is my job RIGHT NOW?** and **Whe
 - Printable LR Translation Dictionary (plain language first, symbols second)
 - RC Viewpoint Tracker (author / scholars / agree-disagree / why)
 - Conditional Logic Tiles (interactive chain + printable cut-apart tiles)
+- Printable Writing Preflight sheet (15-minute plan)
+- Crawl / Walk / Run Progress Board (skill stages, not streaks)
 - Aphantasia-friendly RC verbal passage mapper
-- Argumentative Writing preflight worksheet
 - Mistake Detective with miss-type classification + persistent local error log
 - Autosaved working notes with a visible save-state indicator
 - Export / import of local study data (JSON)
@@ -49,7 +50,7 @@ No build step or dependencies are required. Open `index.html` in a browser, or s
 
 ## Roadmap
 
-Next candidates include a printable Writing Preflight sheet, Crawl/Walk/Run progress board, timed practice modes, and richer miss-pattern analytics.
+Next candidates include timed practice modes, blind-review workflow, and richer miss-pattern analytics.
 
 ## Disclaimer
 

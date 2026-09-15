@@ -34,6 +34,8 @@
     <a href="#translationDict">LR Translation Dictionary</a>
     <a href="#viewpointTracker">RC Viewpoint Tracker</a>
     <a href="#logicTiles">Conditional Logic Tiles</a>
+    <a href="#writingPreflight">Writing Preflight</a>
+    <a href="#progressBoard">Progress Board</a>
     <a href="#framework">Argument Autopsy</a>
     <a href="#errorLogSection">Error Log</a>
   </nav>
@@ -220,31 +222,68 @@
     </section>
 
 
-    <section class="two-col">
-      <article class="panel">
-        <p class="eyebrow">Argumentative Writing</p>
-        <h2>ISSUE → CLAIM → SUPPORT → OBJECTION → REPLY</h2>
-        <div class="writing-grid" id="writingGrid"></div>
-      </article>
-      <article class="panel">
-        <p class="eyebrow">Mistake detective</p>
-        <h2>Turn a miss into a rule</h2>
-        <label>What fooled me?<textarea id="fooled"></textarea></label>
-        <label>Why was it attractive?<textarea id="attractive"></textarea></label>
-        <label>What did I overlook?<textarea id="overlooked"></textarea></label>
-        <label for="missType">Miss type
-          <select id="missType">
-            <option value="">Choose one…</option>
-            <option value="reasoning">Reasoning</option>
-            <option value="reading">Reading</option>
-            <option value="attention">Attention</option>
-            <option value="timing">Timing</option>
-            <option value="question-job">Question-job identification</option>
-          </select>
-        </label>
-        <label>Next-time rule<textarea id="nextRule"></textarea></label>
-        <button id="saveMistake" class="primary">Save to error log</button>
-      </article>
+    <section class="panel study-aid" id="writingPreflight" aria-labelledby="writingPreflightTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Printable study aid • 15-minute plan</p>
+          <h2 id="writingPreflightTitle">Writing Preflight Sheet</h2>
+          <p class="hint">Plan before drafting. Externalize the conflict so the essay has a job.</p>
+        </div>
+        <div class="button-row compact no-print">
+          <button id="clearWritingPreflight" class="ghost">Clear sheet</button>
+          <button id="printWritingPreflight" class="ghost">Print Preflight</button>
+        </div>
+      </div>
+      <div class="preflight-tip">
+        <p><strong>Useful move:</strong> “Perspective B is right that X. However, X does not establish Y because …”</p>
+      </div>
+      <div class="preflight-grid" id="writingPreflightGrid"></div>
+    </section>
+
+    <section class="panel">
+      <p class="eyebrow">Mistake detective</p>
+      <h2>Turn a miss into a rule</h2>
+      <div class="two-col tight">
+        <div>
+          <label>What fooled me?<textarea id="fooled"></textarea></label>
+          <label>Why was it attractive?<textarea id="attractive"></textarea></label>
+          <label>What did I overlook?<textarea id="overlooked"></textarea></label>
+        </div>
+        <div>
+          <label for="missType">Miss type
+            <select id="missType">
+              <option value="">Choose one…</option>
+              <option value="reasoning">Reasoning</option>
+              <option value="reading">Reading</option>
+              <option value="attention">Attention</option>
+              <option value="timing">Timing</option>
+              <option value="question-job">Question-job identification</option>
+            </select>
+          </label>
+          <label>Next-time rule<textarea id="nextRule"></textarea></label>
+          <button id="saveMistake" class="primary">Save to error log</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel study-aid" id="progressBoard" aria-labelledby="progressBoardTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Skill stage tracker</p>
+          <h2 id="progressBoardTitle">Crawl / Walk / Run Progress Board</h2>
+          <p class="hint">Track stage, not streaks. Breaks are allowed. Moving sideways or backward is information, not failure.</p>
+        </div>
+        <div class="button-row compact no-print">
+          <button id="printProgressBoard" class="ghost">Print Board</button>
+        </div>
+      </div>
+      <div class="progress-legend" aria-label="Stage meanings">
+        <span><b>Learning</b> still figuring it out</span>
+        <span><b>Untimed</b> can do carefully</span>
+        <span><b>Timed</b> can do under clock</span>
+        <span><b>Automatic</b> reliable with little strain</span>
+      </div>
+      <div class="progress-board" id="progressBoardGrid"></div>
     </section>
 
     <section class="panel" id="errorLogSection">

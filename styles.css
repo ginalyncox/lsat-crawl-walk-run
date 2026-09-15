@@ -83,3 +83,30 @@ body[data-print="logicTiles"] .logic-workspace{display:none!important}
 body[data-print="logicTiles"] .print-only{display:block!important}
 body[data-print] .logic-print-grid{grid-template-columns:repeat(4,1fr);gap:.4rem}
 body[data-print] .logic-print-tile{break-inside:avoid;border:1px solid #444;border-radius:0;background:#fff;min-height:90px}
+
+.preflight-tip{margin:0 0 .9rem;padding:.75rem 1rem;background:var(--soft);border-left:4px solid var(--accent);border-radius:8px}
+.preflight-tip p{margin:0}
+.preflight-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+.preflight-grid label{background:var(--soft);padding:.85rem;border-radius:12px;display:flex;flex-direction:column;gap:.35rem}
+.preflight-grid b{font-size:1.02rem}
+.preflight-grid span{color:var(--muted);font-size:.82rem}
+.two-col.tight{gap:.9rem;margin-top:.6rem}
+.progress-legend{display:flex;flex-wrap:wrap;gap:.7rem 1.1rem;margin:0 0 1rem;color:var(--muted);font-size:.9rem}
+.progress-legend b{color:var(--ink)}
+.progress-board{display:grid;gap:.65rem}
+.progress-row{display:grid;grid-template-columns:minmax(12rem,1.2fr) 2fr;gap:.7rem;align-items:center;padding:.75rem .85rem;background:var(--soft);border-radius:12px}
+.progress-skill{margin:0;font-weight:800}
+.stage-options{display:flex;flex-wrap:wrap;gap:.4rem}
+.stage-option{display:inline-flex;align-items:center;gap:.3rem;padding:.35rem .55rem;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:.85rem;cursor:pointer}
+.stage-option:has(input:checked){background:var(--focus);border-color:var(--ink);font-weight:700}
+.stage-option input{accent-color:var(--ink)}
+@media(max-width:800px){.preflight-grid{grid-template-columns:1fr}.progress-row{grid-template-columns:1fr}}
+
+body[data-print="writingPreflight"] #writingPreflight,
+body[data-print="progressBoard"] #progressBoard{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
+
+body[data-print] .preflight-grid{grid-template-columns:repeat(2,1fr);gap:.45rem}
+body[data-print] .preflight-grid label{break-inside:avoid;border:1px solid #444;background:#fff}
+body[data-print] .progress-row{break-inside:avoid;border:1px solid #444;background:#fff}
+body[data-print="writingPreflight"] .preflight-tip{border:1px solid #444}
+body[data-print="progressBoard"] .progress-legend{color:#000}
