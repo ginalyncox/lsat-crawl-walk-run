@@ -4,25 +4,28 @@ const phases={
   run:{title:'RUN: Perform under pressure',text:'Use realistic timing. Flag time sinks, reset between sections, then blind-review uncertainty.'}
 };
 const jobs=[
-  ['Main conclusion','Find what the author is trying to prove.','Ask: Which claim are the other claims trying to support?'],
-  ['Strengthen','Make the conclusion more likely.','Move the probability in the required direction; you do not need to prove it.'],
-  ['Weaken','Make the conclusion less likely.','Attack the link between evidence and conclusion, not merely the topic.'],
-  ['Necessary assumption','Find something the argument needs.','Negate the choice. If the reasoning collapses, it was necessary.'],
-  ['Sufficient assumption','Find something strong enough to make the conclusion follow.','Bridge the premises to the conclusion completely.'],
-  ['Flaw','Describe what went wrong in the reasoning.','Name the reasoning mistake; do not merely disagree.'],
-  ['Inference / Must Be True','Prove the answer from the given information.','Do not improve the argument. Stay inside the text.'],
-  ['Resolve / Explain','Make apparently conflicting facts fit together.','Look for a fact that allows both sides to be true.'],
-  ['Principle','Identify or apply the governing rule.','Match the rule to the reasoning job, not just the topic.'],
-  ['Parallel reasoning','Match the structure of the reasoning.','Abstract the form first; subject matter is a distraction.']
+  {name:'Main conclusion',stem:'Which one of the following most accurately expresses the main conclusion / main point?',job:'Find what the author is trying to prove.',check:'Which claim are the other claims trying to support?'},
+  {name:'Strengthen',stem:'Which one of the following, if true, most strengthens / most supports the argument?',job:'Make the conclusion more likely.',check:'Does this move probability in the required direction without needing to prove the conclusion?'},
+  {name:'Weaken',stem:'Which one of the following, if true, most weakens / most calls into question the argument?',job:'Make the conclusion less likely.',check:'Does this attack the evidence → conclusion link, not merely the topic?'},
+  {name:'Necessary assumption',stem:'The argument assumes which one of the following? / Which one is an assumption required by the argument?',job:'Find something the argument needs.',check:'Negate the choice. If the reasoning collapses, it was necessary.'},
+  {name:'Sufficient assumption',stem:'Which one of the following, if assumed, allows the conclusion to be properly drawn?',job:'Find something strong enough to make the conclusion follow.',check:'Does this fully bridge the premises to the conclusion?'},
+  {name:'Flaw',stem:'The reasoning in the argument is most vulnerable to criticism on the grounds that it…',job:'Describe what went wrong in the reasoning.',check:'Did I name the reasoning mistake instead of merely disagreeing?'},
+  {name:'Inference / Must Be True',stem:'Which one of the following must be true / can be properly inferred from the statements above?',job:'Prove the answer from the given information.',check:'Did I stay inside the text without improving the argument?'},
+  {name:'Resolve / Explain',stem:'Which one of the following, if true, most helps to resolve / explain the apparent discrepancy?',job:'Make apparently conflicting facts fit together.',check:'Does this allow both sides to be true at once?'},
+  {name:'Principle',stem:'Which one of the following principles most helps to justify / is illustrated by the argument?',job:'Identify or apply the governing rule.',check:'Does the rule match the reasoning job, not just the topic?'},
+  {name:'Parallel reasoning',stem:'Which one of the following is most closely parallel in its reasoning to the argument above?',job:'Match the structure of the reasoning.',check:'Did I abstract the form first and ignore subject-matter distractions?'}
 ];
 const traps=[
-  ['True but irrelevant','The choice may be factually plausible but does not do the JOB.','Does this change what I was asked about?'],
-  ['Too strong','The choice says ALL, NEVER, MUST, or PROVES when the stimulus supports less.','Did the answer outrun the evidence?'],
-  ['Outside scope','The choice needs a fact or issue the stimulus never gave you.','Where does it say that?'],
-  ['Wrong target','The choice affects something nearby but not the actual conclusion.','What exactly is the conclusion?'],
-  ['Reversal','The answer flips a relationship, condition, comparison, or cause.','Did the arrow get turned around?'],
-  ['Premise restatement','The choice repeats evidence but does not repair or attack the gap.','Does this actually change the evidence → conclusion link?'],
-  ['Interesting ≠ relevant','Your brain found a fascinating implication. The LSAT asked a narrower question.','What is my job RIGHT NOW?']
+  {name:'True but irrelevant',looks:'Factually plausible, maybe even true, but it never does the JOB.',tempting:'Your brain rewards recognizing something that feels correct.',ask:'Does this change what I was asked about?',example:'Stimulus concludes a policy will cut traffic. Choice says the policy is popular with voters.'},
+  {name:'Too strong',looks:'Uses ALL, NEVER, MUST, ONLY, or PROVES when the stimulus supports less.',tempting:'Extreme wording feels decisive and “answer-like.”',ask:'Did the answer outrun the evidence?',example:'Stimulus: some parks reduce stress. Choice: Parks always eliminate anxiety.'},
+  {name:'Outside scope',looks:'Needs a fact, group, or issue the stimulus never introduced.',tempting:'It sounds smart because it imports “real world” knowledge.',ask:'Where does it say that?',example:'Stimulus discusses local recycling rates. Choice debates global oil markets.'},
+  {name:'Wrong target',looks:'Affects a nearby claim, definition, or side issue — not the actual conclusion.',tempting:'It engages the topic, so it feels relevant.',ask:'What exactly is the conclusion?',example:'Conclusion: the mayor’s plan will lower rents. Choice attacks the mayor’s speaking style.'},
+  {name:'Reversal',looks:'Flips a conditional, comparison, causal direction, or order of ideas.',tempting:'The same words appear, so the structure feels familiar.',ask:'Did the arrow get turned around?',example:'Stimulus: If licensed, then trained. Choice treats training as proof of licensing.'},
+  {name:'Premise restatement',looks:'Repeats evidence without repairing or attacking the gap.',tempting:'Familiar wording feels safe and “supported.”',ask:'Does this change the evidence → conclusion link?',example:'Premise: sales rose after ads. Choice: “Sales increased following the ad campaign.”'},
+  {name:'Interesting ≠ relevant',looks:'A fascinating implication that is still off-JOB.',tempting:'Curiosity feels like insight.',ask:'What is my job RIGHT NOW?',example:'Weaken question. Choice offers a clever historical analogy that never touches the gap.'},
+  {name:'Correlation ≠ causation',looks:'Treats “happened together” as “one caused the other.”',tempting:'Temporal order feels like a causal story.',ask:'Could something else explain both?',example:'Stimulus: ice cream sales and drownings rise together. Choice assumes ice cream causes drowning.'},
+  {name:'Necessary / sufficient mix-up',looks:'Treats a required condition as enough, or a enough condition as required.',tempting:'Logic words feel precise even when reversed.',ask:'Is this required, or is it enough?',example:'“You must be registered to vote” becomes “If registered, you definitely vote.”'},
+  {name:'Unsupported comparison',looks:'Ranks, prefers, or equates things the stimulus never compared.',tempting:'Comparatives sound evaluative and conclusive.',ask:'Did the stimulus actually compare these?',example:'Stimulus: Method A works. Choice: Method A works better than Method B.'}
 ];
 const missLabels={
   reasoning:'Reasoning',
@@ -85,21 +88,40 @@ function setPhase(phaseName){
 document.querySelectorAll('.phase').forEach(btn=>btn.addEventListener('click',()=>setPhase(btn.dataset.phase)));
 setPhase(localStorage.getItem('lsat-phase')||'crawl');
 
-jobs.forEach(([name])=>{const o=document.createElement('option');o.textContent=name;$('questionType').appendChild(o)});
+jobs.forEach(j=>{const o=document.createElement('option');o.textContent=j.name;$('questionType').appendChild(o)});
 function showJob(){
-  const [name,job,check]=jobs[$('questionType').selectedIndex];
-  $('jobCard').innerHTML=`<h3>${name}</h3><p><strong>JOB:</strong> ${job}</p><p><strong>Checkpoint:</strong> ${check}</p>`;
+  const j=jobs[$('questionType').selectedIndex];
+  $('jobCard').innerHTML=`<h3>${escapeHtml(j.name)}</h3><p><strong>Stem cue:</strong> ${escapeHtml(j.stem)}</p><p><strong>JOB:</strong> ${escapeHtml(j.job)}</p><p><strong>Checkpoint:</strong> ${escapeHtml(j.check)}</p>`;
 }
 $('questionType').addEventListener('change',showJob);showJob();
 
 let trapIndex=0;
 function showTrap(){
-  const [name,why,check]=traps[trapIndex];
-  $('trapCard').innerHTML=`<p class="eyebrow">Trap ${trapIndex+1} of ${traps.length}</p><h3>${name}</h3><p>${why}</p><p><strong>Ask:</strong> ${check}</p>`;
+  const t=traps[trapIndex];
+  $('trapCard').innerHTML=`<p class="eyebrow">Trap ${trapIndex+1} of ${traps.length}</p><h3>${escapeHtml(t.name)}</h3><p>${escapeHtml(t.looks)}</p><p><strong>Why tempting:</strong> ${escapeHtml(t.tempting)}</p><p><strong>Ask:</strong> ${escapeHtml(t.ask)}</p>`;
 }
 $('nextTrap').onclick=()=>{trapIndex=(trapIndex+1)%traps.length;showTrap()};
 $('prevTrap').onclick=()=>{trapIndex=(trapIndex-1+traps.length)%traps.length;showTrap()};
 showTrap();
+
+function renderDecisionMat(){
+  const body=$('decisionMatTable').querySelector('tbody');
+  body.innerHTML=jobs.map(j=>`<tr><td>${escapeHtml(j.stem)}</td><td><strong>${escapeHtml(j.name)}</strong><div class="mat-job">${escapeHtml(j.job)}</div></td><td>${escapeHtml(j.check)}</td></tr>`).join('');
+}
+function renderTrapDeck(){
+  $('trapDeckGrid').innerHTML=traps.map((t,i)=>`<article class="trap-print-card"><p class="eyebrow">Trap ${i+1}</p><h3>${escapeHtml(t.name)}</h3><p><strong>Looks like:</strong> ${escapeHtml(t.looks)}</p><p><strong>Why tempting:</strong> ${escapeHtml(t.tempting)}</p><p><strong>Ask:</strong> ${escapeHtml(t.ask)}</p><p><strong>Example:</strong> ${escapeHtml(t.example)}</p></article>`).join('');
+}
+function printSection(sectionId){
+  document.body.dataset.print=sectionId;
+  const cleanup=()=>{delete document.body.dataset.print;window.removeEventListener('afterprint',cleanup)};
+  window.addEventListener('afterprint',cleanup);
+  window.print();
+  setTimeout(cleanup,1000);
+}
+$('printDecisionMat').onclick=()=>printSection('decisionMat');
+$('printTrapDeck').onclick=()=>printSection('trapDeck');
+renderDecisionMat();
+renderTrapDeck();
 
 let pCount=4;
 function renderParagraphs(){
