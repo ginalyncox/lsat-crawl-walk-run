@@ -591,11 +591,14 @@ function cancelBlindReview(){
   toast('Blind review canceled — adjust result or continue.');
 }
 function on(id,fn){const el=$(id);if(el)el.addEventListener('click',fn)}
-// Event delegation backup for practice start (avoids layout/overlap click misses)
-document.getElementById('practiceSession')?.addEventListener('click',e=>{
-  const btn=e.target.closest('button');
+function bindStartPractice(){
+  const btn=$('startPractice');
   if(!btn)return;
-  if(btn.id==='startPractice'){e.preventDefault();startPracticeSession()}
+  btn.addEventListener('click',e=>{e.preventDefault();startPracticeSession()});
+}
+bindStartPractice();
+document.getElementById('practiceSession')?.addEventListener('click',e=>{
+  if(e.target.closest('#startPractice')){e.preventDefault();startPracticeSession()}
 });
 on('endPractice',()=>{if(confirm('End this practice session?'))endPracticeSession(true)});
 on('completePracticeQ',()=>completeCurrentPracticeQ(false));
@@ -614,8 +617,8 @@ on('restartPractice',()=>{
 });
 on('oneQuestion',()=>{ $('practiceMode').value='1'; startPracticeSession(); });
 on('fiveQuestion',()=>{ $('practiceMode').value='5'; startPracticeSession(); });
-// Expose for console debugging / recovery
 window.startPracticeSession=startPracticeSession;
+
 (function resumePractice(){
   renderPracticeQueues();
   const saved=loadPractice();

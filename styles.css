@@ -116,9 +116,9 @@ body[data-print="progressBoard"] .progress-legend{color:#000}
 .inline-label select{font:inherit;padding:.4rem .55rem;border:1px solid var(--line);border-radius:8px;background:#fff}
 [hidden]{display:none!important}
 .practice-idle,.practice-active,.practice-summary{margin-top:.5rem}
-.practice-idle-controls{display:grid;gap:.65rem;margin:.85rem 0 1rem;padding:1rem;background:var(--soft);border:1px solid var(--line);border-radius:12px}
-.practice-idle-controls .button-row{flex-wrap:wrap;align-items:end}
-.practice-idle-controls .primary{min-width:9rem}
+.practice-idle-controls{display:grid;gap:.65rem;margin:.85rem 0 1rem;padding:1rem;background:var(--soft);border:1px solid var(--line);border-radius:12px;position:relative;z-index:2}
+.practice-idle-controls .button-row{flex-wrap:wrap;align-items:end;justify-content:flex-start}
+.practice-idle-controls .primary{min-width:9rem;position:relative;z-index:3}
 .practice-steps-preview{margin:.4rem 0 0;padding-left:1.2rem}
 .practice-status{display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:center;justify-content:space-between;margin-bottom:.8rem}
 .practice-timer{margin:0;font-weight:800}
