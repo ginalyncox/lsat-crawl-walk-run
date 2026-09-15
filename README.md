@@ -4,12 +4,13 @@ An ADHD-PI and aphantasia-friendly LSAT study system built around **accuracy →
 
 ## Core method
 
-Logical Reasoning uses **JOB → GIVEN → TARGET → GAP**:
+Logical Reasoning uses **JOB → GIVEN → CONCLUSION → GAP → TARGET**:
 
 - **JOB** — What am I being asked to do?
 - **GIVEN** — What did the stimulus actually establish?
-- **TARGET** — What must the correct answer accomplish?
+- **CONCLUSION** — What claim is the argument trying to prove?
 - **GAP** — Where is the reasoning vulnerable or incomplete?
+- **TARGET** — What must the correct answer accomplish?
 
 Two reset questions run through the app: **What is my job RIGHT NOW?** and **Where does it say that?**
 
@@ -17,13 +18,14 @@ Two reset questions run through the app: **What is my job RIGHT NOW?** and **Whe
 
 - Crawl / Walk / Run phase switcher
 - Minimum viable one-question study session
-- Interactive Argument Autopsy worksheet
+- Interactive Argument Autopsy worksheet (JOB → GIVEN → CONCLUSION → GAP → TARGET, A–E elimination, credited-answer review)
 - LR question-stem / JOB decoder
 - Wrong-answer trap trainer
 - Aphantasia-friendly RC verbal passage mapper
 - Argumentative Writing preflight worksheet
-- Mistake Detective + persistent local error log
-- Autosaved working notes in browser local storage
+- Mistake Detective with miss-type classification + persistent local error log
+- Autosaved working notes with a visible save-state indicator
+- Export / import of local study data (JSON)
 - Responsive, keyboard-friendly, low-clutter interface
 - Print stylesheet for worksheets
 
