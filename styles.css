@@ -122,6 +122,15 @@ body[data-print="progressBoard"] .progress-legend{color:#000}
 .practice-checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem .8rem;margin-bottom:.9rem}
 .practice-checklist label{display:flex;gap:.45rem;align-items:flex-start;background:var(--soft);padding:.65rem .75rem;border-radius:10px}
 .practice-result{margin-bottom:.8rem}
+.practice-blind{margin:1rem 0;padding:1rem;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--soft),#fff)}
+.practice-blind .eyebrow{margin-bottom:.25rem}
+.practice-queues{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem}
+.practice-queues .queue-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:1rem}
+.practice-queues .queue-card h3{margin:.1rem 0 .6rem;font-size:1.1rem}
+.queue-list{display:grid;gap:.55rem}
+.queue-item{background:#fff;border:1px solid var(--line);border-radius:10px;padding:.7rem .8rem}
+.queue-item p{margin:.15rem 0}
+@media(max-width:800px){.practice-queues{grid-template-columns:1fr}}
 .study-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem}
 .study-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:1rem;min-height:170px;break-inside:avoid}
 .study-card h3{margin:.15rem 0 .55rem;font-size:1.12rem}

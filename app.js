@@ -334,22 +334,80 @@ $('proofButton').onclick=()=>toast('Facts first. Did the stimulus actually say i
 $('oneQuestion').onclick=()=>{ $('practiceMode').value='1'; startPracticeSession(); };
 $('fiveQuestion').onclick=()=>{ $('practiceMode').value='5'; startPracticeSession(); };
 
-const practice={active:false,total:1,index:0,timing:'untimed',startedAt:0,timerId:null,results:[]};
+const PRACTICE_QUEUES_KEY='lsat-practice-queues';
+const practice={
+  active:false,total:1,index:0,timing:'untimed',reviewMode:'off',
+  comparePass:null,compareBaseline:[],startedAt:0,timerId:null,results:[]
+};
+let pendingPracticeEntry=null;
+
 function practiceStorageKey(){return 'lsat-practice-session'}
-function savePractice(){localStorage.setItem(practiceStorageKey(),JSON.stringify({active:practice.active,total:practice.total,index:practice.index,timing:practice.timing,startedAt:practice.startedAt,results:practice.results}))}
+function practicePersistable(){
+  return {
+    active:practice.active,total:practice.total,index:practice.index,timing:practice.timing,
+    reviewMode:practice.reviewMode,comparePass:practice.comparePass,compareBaseline:practice.compareBaseline,
+    startedAt:practice.startedAt,results:practice.results
+  };
+}
+function savePractice(){localStorage.setItem(practiceStorageKey(),JSON.stringify(practicePersistable()))}
 function loadPractice(){
   try{return JSON.parse(localStorage.getItem(practiceStorageKey())||'null')}catch(e){return null}
 }
+function loadPracticeQueues(){
+  try{
+    const data=JSON.parse(localStorage.getItem(PRACTICE_QUEUES_KEY)||'{}');
+    return {flags:Array.isArray(data.flags)?data.flags:[],misses:Array.isArray(data.misses)?data.misses:[]};
+  }catch(e){return {flags:[],misses:[]}}
+}
+function savePracticeQueues(queues){localStorage.setItem(PRACTICE_QUEUES_KEY,JSON.stringify(queues))}
+function addToPracticeQueue(kind,entry){
+  const queues=loadPracticeQueues();
+  const list=kind==='flag'?queues.flags:queues.misses;
+  list.unshift({...entry,id:`${Date.now()}-${Math.random().toString(36).slice(2,7)}`,savedAt:new Date().toISOString()});
+  if(list.length>40)list.length=40;
+  savePracticeQueues(queues);
+  renderPracticeQueues();
+}
+function clearPracticeQueue(kind){
+  const queues=loadPracticeQueues();
+  if(kind==='flag')queues.flags=[]; else queues.misses=[];
+  savePracticeQueues(queues);
+  renderPracticeQueues();
+  toast(kind==='flag'?'Flag queue cleared.':'Miss queue cleared.');
+}
+function queueItemHTML(item,kind){
+  const label=escapeHtml(item.label||'Unlabeled');
+  const miss=item.miss?` · ${escapeHtml(missLabels[item.miss]||item.miss)}`:'';
+  const note=escapeHtml(item.note||item.blindNote||'No note');
+  const when=escapeHtml((item.savedAt||'').slice(0,10));
+  const pass=item.pass?` · ${escapeHtml(item.pass)}`:'';
+  return `<article class="queue-item"><p><strong>${label}</strong> · Q${item.q} · ${escapeHtml(item.result||'')}${kind==='flag'?' ⚑':''}${miss}${pass}</p><p class="hint">${note} · ${when}</p></article>`;
+}
+function renderPracticeQueues(){
+  const queues=loadPracticeQueues();
+  const flagEl=$('flagQueueList');
+  const missEl=$('missQueueList');
+  if(flagEl)flagEl.innerHTML=queues.flags.length?queues.flags.map(i=>queueItemHTML(i,'flag')).join(''):'<p class="hint">No flagged questions yet.</p>';
+  if(missEl)missEl.innerHTML=queues.misses.length?queues.misses.map(i=>queueItemHTML(i,'miss')).join(''):'<p class="hint">No misses logged from practice yet.</p>';
+}
+
 function clearPracticeTimer(){if(practice.timerId){clearInterval(practice.timerId);practice.timerId=null}}
 function formatMMSS(ms){
   const s=Math.max(0,Math.floor(ms/1000));
   const m=Math.floor(s/60); const r=s%60;
   return `${m}:${String(r).padStart(2,'0')}`;
 }
+function effectiveTimed(){
+  return practice.timing==='timed'||(practice.timing==='compare'&&practice.comparePass==='timed');
+}
 function updatePracticeTimer(){
   const el=$('practiceTimer');
   if(!el)return;
-  if(practice.timing!=='timed'){el.textContent='Untimed';return}
+  if(!effectiveTimed()){
+    el.textContent=practice.timing==='compare'?(practice.comparePass==='timed'?'Compare · timed':'Compare · untimed'):'Untimed';
+    el.classList.remove('over');
+    return;
+  }
   const elapsed=Date.now()-practice.startedAt;
   const budget=practice.total*90*1000;
   const remaining=budget-elapsed;
@@ -361,43 +419,90 @@ function showPracticeView(which){
   $('practiceIdleControls').hidden=which!=='idle';
   $('practiceActive').hidden=which!=='active';
   $('practiceSummary').hidden=which!=='summary';
+  if(which!=='active')hideBlindReview();
+}
+function hideBlindReview(){
+  pendingPracticeEntry=null;
+  if($('practiceBlindReview'))$('practiceBlindReview').hidden=true;
+  if($('practiceActiveForm'))$('practiceActiveForm').hidden=false;
+  if($('practiceActiveActions'))$('practiceActiveActions').hidden=false;
+}
+function showBlindReview(entry){
+  pendingPracticeEntry=entry;
+  if($('practiceActiveForm'))$('practiceActiveForm').hidden=true;
+  if($('practiceActiveActions'))$('practiceActiveActions').hidden=true;
+  if($('practiceBlindReview'))$('practiceBlindReview').hidden=false;
+  document.querySelectorAll('#practiceBlindChecklist input[type=checkbox]').forEach(c=>c.checked=false);
+  $('practiceBlindNote').value='';
+  $('practiceBlindPrompt').textContent=entry.result==='unsure'
+    ?'Blind review (flagged): justify without looking at the credited answer first.'
+    :'Blind review (miss): justify without looking at the credited answer first.';
 }
 function resetPracticeForm(){
+  hideBlindReview();
   document.querySelectorAll('#practiceChecklist input[type=checkbox]').forEach(c=>c.checked=false);
   $('practiceResult').value='';
   $('practiceMiss').value='';
   $('practiceNote').value='';
 }
 function renderPracticeProgress(){
-  $('practiceProgress').textContent=`Question ${practice.index+1} of ${practice.total}`;
+  const pass=
+    practice.timing==='compare'
+      ?(practice.comparePass==='timed'?' · compare timed pass':' · compare untimed pass')
+      :(practice.timing==='timed'?' · timed':' · untimed');
+  $('practiceProgress').textContent=`Question ${practice.index+1} of ${practice.total}${pass}`;
   updatePracticeTimer();
+}
+function startPracticeTimerIfNeeded(){
+  clearPracticeTimer();
+  practice.startedAt=Date.now();
+  if(effectiveTimed())practice.timerId=setInterval(updatePracticeTimer,1000);
 }
 function startPracticeSession(){
   clearPracticeTimer();
+  const timing=$('practiceTiming').value||'untimed';
   practice.active=true;
   practice.total=Math.max(1, Math.min(5, +$('practiceMode').value||1));
   practice.index=0;
-  practice.timing=$('practiceTiming').value||'untimed';
-  practice.startedAt=Date.now();
+  practice.timing=['untimed','timed','compare'].includes(timing)?timing:'untimed';
+  practice.reviewMode=$('practiceReviewMode')?.value==='after'?'after':'off';
+  practice.comparePass=practice.timing==='compare'?'untimed':null;
+  practice.compareBaseline=[];
   practice.results=[];
   resetPracticeForm();
+  startPracticeTimerIfNeeded();
   showPracticeView('active');
   renderPracticeProgress();
-  if(practice.timing==='timed'){
-    practice.timerId=setInterval(updatePracticeTimer,1000);
-  }
   savePractice();
   document.getElementById('practiceSession').scrollIntoView({behavior:'smooth'});
-  toast(practice.total===1?'One-question session started':'Five-question mini-set started');
+  const hint=practice.timing==='compare'?' (untimed pass first)':'';
+  toast(practice.total===1?`One-question session started${hint}`:`Five-question mini-set started${hint}`);
+}
+function startCompareTimedPass(){
+  if(practice.timing!=='compare'||practice.comparePass!=='untimed')return;
+  practice.compareBaseline=practice.results.slice();
+  practice.comparePass='timed';
+  practice.results=[];
+  practice.index=0;
+  practice.active=true;
+  resetPracticeForm();
+  startPracticeTimerIfNeeded();
+  showPracticeView('active');
+  renderPracticeProgress();
+  savePractice();
+  if($('startComparePass'))$('startComparePass').hidden=true;
+  toast('Timed compare pass started — same questions, clock pressure.');
 }
 function endPracticeSession(showSummary=true){
   clearPracticeTimer();
   practice.active=false;
+  hideBlindReview();
   savePractice();
   if(showSummary){
     renderPracticeSummary();
     showPracticeView('summary');
   }else{
+    if($('startComparePass'))$('startComparePass').hidden=true;
     showPracticeView('idle');
   }
 }
@@ -413,27 +518,36 @@ function renderPracticeSummary(){
     : '<p>No miss-type tags logged.</p>';
   const focus=Object.entries(missCounts).sort((a,b)=>b[1]-a[1])[0];
   const focusText=focus?`Next focus: ${missLabels[focus[0]]||focus[0]}.`:'Next focus: keep externalizing JOB → GAP before answer choices.';
+  const passLabel=practice.timing==='compare'
+    ?(practice.comparePass==='timed'?'Compare · timed pass':'Compare · untimed pass')
+    :practice.timing;
+  let compareHtml='';
+  const showCompareBtn=practice.timing==='compare'&&practice.comparePass==='untimed';
+  if(showCompareBtn){
+    compareHtml='<p class="hint">Next: same questions under timed pressure. Compare accuracy, not just speed.</p>';
+  }else if(practice.timing==='compare'&&practice.comparePass==='timed'){
+    const prior=practice.compareBaseline||[];
+    const priorCorrect=prior.filter(r=>r.result==='correct').length;
+    compareHtml=`<p><strong>Compare:</strong> untimed ${priorCorrect}/${practice.total} → timed ${correct}/${practice.total}. Where timed dropped, mark for crawl autopsy.</p>`;
+  }
   $('practiceSummaryBody').innerHTML=`
-    <p><strong>Completed:</strong> ${res.length} / ${practice.total}</p>
+    <p><strong>Completed:</strong> ${res.length} / ${practice.total} · ${escapeHtml(passLabel)}</p>
     <p><strong>Correct:</strong> ${correct} · <strong>Wrong:</strong> ${wrong} · <strong>Flagged:</strong> ${unsure}</p>
     <div><p class="eyebrow">Miss patterns</p>${missHtml}</div>
+    ${compareHtml}
     <p>${escapeHtml(focusText)}</p>
-    <p class="hint">Accuracy first. Speed only after the process is repeatable.</p>`;
+    <p class="hint">Accuracy first. Speed only after the process is repeatable. Flagged/missed items stay in Review Queues below.</p>`;
+  if($('startComparePass'))$('startComparePass').hidden=!showCompareBtn;
 }
-function completeCurrentPracticeQ(flagged=false){
-  if(!practice.active)return;
-  const result=flagged?'unsure':($('practiceResult').value||'unsure');
-  if(!flagged && !$('practiceResult').value){toast('Choose a result first');return}
-  const steps={};
-  document.querySelectorAll('#practiceChecklist input[type=checkbox]').forEach(c=>{steps[c.dataset.step]=c.checked});
-  practice.results.push({
-    q:practice.index+1,
-    result,
-    miss:$('practiceMiss').value||'',
-    note:$('practiceNote').value.trim(),
-    steps,
-    at:new Date().toISOString()
-  });
+function enqueueFromEntry(entry){
+  const pass=practice.timing==='compare'?(practice.comparePass||'untimed'):practice.timing;
+  const base={label:entry.label,q:entry.q,result:entry.result,miss:entry.miss,note:entry.note,blindNote:entry.blindNote||'',pass};
+  if(entry.result==='unsure')addToPracticeQueue('flag',base);
+  if(entry.result==='wrong')addToPracticeQueue('miss',base);
+}
+function commitPracticeEntry(entry){
+  enqueueFromEntry(entry);
+  practice.results.push(entry);
   if(practice.index+1>=practice.total){
     endPracticeSession(true);
     toast('Session complete');
@@ -445,19 +559,77 @@ function completeCurrentPracticeQ(flagged=false){
   savePractice();
   toast(`Question ${practice.index+1} of ${practice.total}`);
 }
+function completeCurrentPracticeQ(flagged=false){
+  if(!practice.active||pendingPracticeEntry)return;
+  const result=flagged?'unsure':($('practiceResult').value||'');
+  if(!result){toast('Choose a result first');return}
+  const steps={};
+  document.querySelectorAll('#practiceChecklist input[type=checkbox]').forEach(c=>{steps[c.dataset.step]=c.checked});
+  const entry={
+    q:practice.index+1,
+    result,
+    miss:$('practiceMiss').value||'',
+    label:($('practiceLabel')?.value||'').trim(),
+    note:$('practiceNote').value.trim(),
+    blindNote:'',
+    blindChecks:[],
+    steps,
+    at:new Date().toISOString()
+  };
+  const needsBlind=practice.reviewMode==='after'&&(entry.result==='wrong'||entry.result==='unsure');
+  if(needsBlind){showBlindReview(entry);return}
+  commitPracticeEntry(entry);
+}
+function confirmBlindReview(){
+  if(!pendingPracticeEntry)return;
+  pendingPracticeEntry.blindNote=($('practiceBlindNote')?.value||'').trim();
+  pendingPracticeEntry.blindChecks=Array.from(document.querySelectorAll('#practiceBlindChecklist input[type=checkbox]'))
+    .filter(c=>c.checked).map(c=>c.dataset.blind||'');
+  const entry=pendingPracticeEntry;
+  hideBlindReview();
+  commitPracticeEntry(entry);
+}
+function cancelBlindReview(){
+  hideBlindReview();
+  toast('Blind review canceled — adjust result or continue.');
+}
 $('startPractice').onclick=startPracticeSession;
 $('endPractice').onclick=()=>{if(confirm('End this practice session?'))endPracticeSession(true)};
 $('completePracticeQ').onclick=()=>completeCurrentPracticeQ(false);
 $('flagPractice').onclick=()=>completeCurrentPracticeQ(true);
+$('confirmBlindReview').onclick=confirmBlindReview;
+$('cancelBlindReview').onclick=cancelBlindReview;
+$('startComparePass').onclick=startCompareTimedPass;
+$('clearFlagQueue').onclick=()=>clearPracticeQueue('flag');
+$('clearMissQueue').onclick=()=>clearPracticeQueue('miss');
 $('openAutopsy').onclick=()=>{document.getElementById('framework').scrollIntoView({behavior:'smooth'});$('job').focus()};
-$('restartPractice').onclick=()=>showPracticeView('idle');
+$('restartPractice').onclick=()=>{
+  practice.active=false;practice.results=[];practice.compareBaseline=[];practice.comparePass=null;
+  clearPracticeTimer();hideBlindReview();savePractice();
+  if($('startComparePass'))$('startComparePass').hidden=true;
+  showPracticeView('idle');
+};
 (function resumePractice(){
+  renderPracticeQueues();
   const saved=loadPractice();
-  if(!saved||!saved.active){showPracticeView('idle');return}
-  Object.assign(practice,saved);
-  showPracticeView('active');
-  renderPracticeProgress();
-  if(practice.timing==='timed')practice.timerId=setInterval(updatePracticeTimer,1000);
+  if(!saved){showPracticeView('idle');return}
+  Object.assign(practice,{
+    comparePass:null,compareBaseline:[],reviewMode:'off',...saved,timerId:null
+  });
+  if(saved.active){
+    showPracticeView('active');
+    renderPracticeProgress();
+    if(effectiveTimed()){
+      // Keep original startedAt so the clock continues across refresh
+      practice.timerId=setInterval(updatePracticeTimer,1000);
+      updatePracticeTimer();
+    }
+    return;
+  }
+  if(saved.results&&saved.results.length){
+    renderPracticeSummary();
+    showPracticeView('summary');
+  }else showPracticeView('idle');
 })();
 
 function studyCardHTML(card){
@@ -527,7 +699,8 @@ function exportStudyData(){
     phase:localStorage.getItem('lsat-phase')||'crawl',
     draft:JSON.parse(localStorage.getItem('lsat-draft')||'{}'),
     errors:getLog(),
-    practice:loadPractice()
+    practice:loadPractice(),
+    practiceQueues:loadPracticeQueues()
   };
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
@@ -546,9 +719,15 @@ function importStudyData(file){
       if(!data||typeof data!=='object')throw new Error('Invalid file');
       if(data.draft&&typeof data.draft==='object')localStorage.setItem('lsat-draft',JSON.stringify(data.draft));
       if(Array.isArray(data.errors))localStorage.setItem('lsat-errors',JSON.stringify(data.errors.slice(0,50)));
+      if(data.practice&&typeof data.practice==='object')localStorage.setItem(practiceStorageKey(),JSON.stringify(data.practice));
+      if(data.practiceQueues&&typeof data.practiceQueues==='object')savePracticeQueues({
+        flags:Array.isArray(data.practiceQueues.flags)?data.practiceQueues.flags.slice(0,40):[],
+        misses:Array.isArray(data.practiceQueues.misses)?data.practiceQueues.misses.slice(0,40):[]
+      });
       if(typeof data.phase==='string'&&phases[data.phase])setPhase(data.phase);
       restoreDraft();
       renderLog();
+      renderPracticeQueues();
       toast('Study data imported');
     }catch(err){
       toast('Import failed — use a valid export file');

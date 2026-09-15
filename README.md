@@ -30,10 +30,13 @@ Two reset questions run through the app: **What is my job RIGHT NOW?** and **Whe
 - Crawl / Walk / Run Progress Board (skill stages, not streaks)
 - Printable Study Card Generator (JOB / trap / translation / logic decks)
 - Guided practice sessions (1-question and 5-question mini-set)
+- Untimed → timed comparison pass
+- Blind-review gate after misses/flags
+- Flag & return + miss review queues (localStorage)
 - Aphantasia-friendly RC verbal passage mapper
 - Mistake Detective with miss-type classification + persistent local error log
 - Autosaved working notes with a visible save-state indicator
-- Export / import of local study data (JSON)
+- Export / import of local study data (JSON), including practice queues
 - Responsive, keyboard-friendly, low-clutter interface
 - Print stylesheet for worksheets and study cards
 
@@ -52,7 +55,7 @@ No build step or dependencies are required. Open `index.html` in a browser, or s
 
 ## Roadmap
 
-Next candidates include blind-review workflow, flag-and-return queue, and richer miss-pattern analytics.
+Next candidates include richer miss-pattern analytics and optional printable session sheets.
 
 ## Disclaimer
 

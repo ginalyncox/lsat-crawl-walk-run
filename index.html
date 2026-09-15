@@ -38,6 +38,7 @@
     <a href="#progressBoard">Progress Board</a>
     <a href="#studyCards">Study Cards</a>
     <a href="#practiceSession">Practice Session</a>
+    <a href="#practiceQueues">Review Queues</a>
     <a href="#framework">Argument Autopsy</a>
     <a href="#errorLogSection">Error Log</a>
   </nav>
@@ -73,6 +74,13 @@
             <select id="practiceTiming">
               <option value="untimed">Untimed</option>
               <option value="timed">Timed (~1:30 / Q)</option>
+              <option value="compare">Compare: untimed → timed</option>
+            </select>
+          </label>
+          <label class="inline-label">Review
+            <select id="practiceReviewMode">
+              <option value="off">No blind review</option>
+              <option value="after">Blind review after each miss/flag</option>
             </select>
           </label>
           <button id="startPractice" class="primary">Start session</button>
@@ -95,35 +103,55 @@
           <p id="practiceTimer" class="practice-timer" aria-live="polite"></p>
           <button id="endPractice" class="ghost no-print">End session</button>
         </div>
-        <div class="practice-checklist" id="practiceChecklist">
-          <label><input type="checkbox" data-step="job"/> Name the JOB</label>
-          <label><input type="checkbox" data-step="autopsy"/> Fill autopsy fields</label>
-          <label><input type="checkbox" data-step="eliminate"/> Eliminate A–E</label>
-          <label><input type="checkbox" data-step="credited"/> Credited answer / why</label>
-          <label><input type="checkbox" data-step="rule"/> Next-time rule if needed</label>
+        <div id="practiceActiveForm">
+          <div class="practice-checklist" id="practiceChecklist">
+            <label><input type="checkbox" data-step="job"/> Name the JOB</label>
+            <label><input type="checkbox" data-step="autopsy"/> Fill autopsy fields</label>
+            <label><input type="checkbox" data-step="eliminate"/> Eliminate A–E</label>
+            <label><input type="checkbox" data-step="credited"/> Credited answer / why</label>
+            <label><input type="checkbox" data-step="rule"/> Next-time rule if needed</label>
+          </div>
+          <div class="practice-result two-col tight">
+            <label for="practiceResult">Result
+              <select id="practiceResult">
+                <option value="">Choose…</option>
+                <option value="correct">Correct</option>
+                <option value="wrong">Wrong</option>
+                <option value="unsure">Unsure / flagged</option>
+              </select>
+            </label>
+            <label for="practiceMiss">If wrong, miss type
+              <select id="practiceMiss">
+                <option value="">Optional…</option>
+                <option value="reasoning">Reasoning</option>
+                <option value="reading">Reading</option>
+                <option value="attention">Attention</option>
+                <option value="timing">Timing</option>
+                <option value="question-job">Question-job identification</option>
+              </select>
+            </label>
+          </div>
+          <label class="wide"><b>Question label</b><span>e.g., PT73 S1 Q14 — for flag/return and comparison</span><input id="practiceLabel" type="text" placeholder="Optional label"/></label>
+          <label class="wide"><b>Quick note</b><span>What mattered on this question?</span><textarea id="practiceNote" placeholder="Optional"></textarea></label>
         </div>
-        <div class="practice-result two-col tight">
-          <label for="practiceResult">Result
-            <select id="practiceResult">
-              <option value="">Choose…</option>
-              <option value="correct">Correct</option>
-              <option value="wrong">Wrong</option>
-              <option value="unsure">Unsure / flagged</option>
-            </select>
-          </label>
-          <label for="practiceMiss">If wrong, miss type
-            <select id="practiceMiss">
-              <option value="">Optional…</option>
-              <option value="reasoning">Reasoning</option>
-              <option value="reading">Reading</option>
-              <option value="attention">Attention</option>
-              <option value="timing">Timing</option>
-              <option value="question-job">Question-job identification</option>
-            </select>
-          </label>
+
+        <div id="practiceBlindReview" class="practice-blind" hidden>
+          <p class="eyebrow">Blind review gate</p>
+          <p class="hint" id="practiceBlindPrompt">Before saving a miss/flag, re-check the reasoning without leaning on memory of the choice.</p>
+          <div class="practice-checklist" id="practiceBlindChecklist">
+            <label><input type="checkbox" data-blind="rejob"/> Re-state the JOB in one phrase</label>
+            <label><input type="checkbox" data-blind="gap"/> Name the GAP without looking at choices</label>
+            <label><input type="checkbox" data-blind="predict"/> Predict what the credited answer must do</label>
+            <label><input type="checkbox" data-blind="trap"/> Name the trap that fooled you (if any)</label>
+          </div>
+          <label class="wide"><b>Blind-review note</b><textarea id="practiceBlindNote" placeholder="What changed when you reviewed blind?"></textarea></label>
+          <div class="button-row no-print">
+            <button id="cancelBlindReview" class="ghost">Back</button>
+            <button id="confirmBlindReview" class="primary">Finish &amp; continue</button>
+          </div>
         </div>
-        <label class="wide"><b>Quick note</b><span>What mattered on this question?</span><textarea id="practiceNote" placeholder="Optional"></textarea></label>
-        <div class="button-row no-print">
+
+        <div class="button-row no-print" id="practiceActiveActions">
           <button id="openAutopsy" class="ghost">Open autopsy</button>
           <button id="flagPractice" class="ghost">Flag &amp; continue</button>
           <button id="completePracticeQ" class="primary">Save &amp; next</button>
@@ -134,7 +162,31 @@
         <h3>Session summary</h3>
         <div id="practiceSummaryBody"></div>
         <div class="button-row no-print">
+          <button id="startComparePass" class="ghost" hidden>Start timed comparison pass</button>
           <button id="restartPractice" class="primary">New session</button>
+        </div>
+      </div>
+
+      <div class="practice-queues no-print" id="practiceQueues">
+        <div class="queue-card">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Flag &amp; return</p>
+              <h3>Flagged queue</h3>
+            </div>
+            <button id="clearFlagQueue" class="ghost">Clear flags</button>
+          </div>
+          <div id="flagQueueList" class="queue-list"></div>
+        </div>
+        <div class="queue-card">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Miss review</p>
+              <h3>Miss queue</h3>
+            </div>
+            <button id="clearMissQueue" class="ghost">Clear misses</button>
+          </div>
+          <div id="missQueueList" class="queue-list"></div>
         </div>
       </div>
     </section>
