@@ -225,13 +225,13 @@ Allow the user to mark exactly where they stopped and return there later.
 
 ### Phase C — practice workflow
 
-1. One-question session mode.
-2. Five-question mini-set mode.
-3. Untimed → timed comparison.
-4. Blind-review workflow.
-5. “Flag and return” queue.
-6. Miss review queue.
-7. Session summary based on reasoning patterns, not just score.
+1. One-question session mode. ✅
+2. Five-question mini-set mode. ✅
+3. Untimed → timed comparison. ✅
+4. Blind-review workflow. ✅
+5. “Flag and return” queue. ✅
+6. Miss review queue. ✅
+7. Session summary based on reasoning patterns, not just score. ✅ (basic miss-pattern summary; richer analytics still optional)
 
 ### Phase D — optional richer architecture
 

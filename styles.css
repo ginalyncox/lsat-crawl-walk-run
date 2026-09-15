@@ -114,7 +114,11 @@ body[data-print="progressBoard"] .progress-legend{color:#000}
 .today-actions{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center}
 .inline-label{display:flex;align-items:center;gap:.4rem;font-weight:700;font-size:.9rem}
 .inline-label select{font:inherit;padding:.4rem .55rem;border:1px solid var(--line);border-radius:8px;background:#fff}
+[hidden]{display:none!important}
 .practice-idle,.practice-active,.practice-summary{margin-top:.5rem}
+.practice-idle-controls{display:grid;gap:.65rem;margin:.85rem 0 1rem;padding:1rem;background:var(--soft);border:1px solid var(--line);border-radius:12px;position:relative;z-index:2}
+.practice-idle-controls .button-row{flex-wrap:wrap;align-items:end;justify-content:flex-start}
+.practice-idle-controls .primary{min-width:9rem;width:100%;max-width:22rem;position:relative;z-index:3}
 .practice-steps-preview{margin:.4rem 0 0;padding-left:1.2rem}
 .practice-status{display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:center;justify-content:space-between;margin-bottom:.8rem}
 .practice-timer{margin:0;font-weight:800}
@@ -122,6 +126,15 @@ body[data-print="progressBoard"] .progress-legend{color:#000}
 .practice-checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem .8rem;margin-bottom:.9rem}
 .practice-checklist label{display:flex;gap:.45rem;align-items:flex-start;background:var(--soft);padding:.65rem .75rem;border-radius:10px}
 .practice-result{margin-bottom:.8rem}
+.practice-blind{margin:1rem 0;padding:1rem;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--soft),#fff)}
+.practice-blind .eyebrow{margin-bottom:.25rem}
+.practice-queues{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem}
+.practice-queues .queue-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:1rem}
+.practice-queues .queue-card h3{margin:.1rem 0 .6rem;font-size:1.1rem}
+.queue-list{display:grid;gap:.55rem}
+.queue-item{background:#fff;border:1px solid var(--line);border-radius:10px;padding:.7rem .8rem}
+.queue-item p{margin:.15rem 0}
+@media(max-width:800px){.practice-queues{grid-template-columns:1fr}}
 .study-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem}
 .study-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:1rem;min-height:170px;break-inside:avoid}
 .study-card h3{margin:.15rem 0 .55rem;font-size:1.12rem}
