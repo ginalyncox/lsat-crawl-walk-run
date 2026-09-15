@@ -40,14 +40,35 @@
 
     <section class="framework" aria-labelledby="frameworkTitle">
       <div class="section-head">
-        <div><p class="eyebrow">Logical Reasoning</p><h2 id="frameworkTitle">JOB → GIVEN → TARGET → GAP</h2></div>
+        <div>
+          <p class="eyebrow">Logical Reasoning</p>
+          <h2 id="frameworkTitle">JOB → GIVEN → CONCLUSION → GAP → TARGET</h2>
+          <p id="saveState" class="save-state" role="status" aria-live="polite">Draft ready</p>
+        </div>
         <button class="ghost" id="clearAutopsy">Clear worksheet</button>
       </div>
-      <div class="four-grid">
+      <div class="autopsy-core">
         <label><b>1. JOB</b><span>What am I being asked to do?</span><textarea id="job" placeholder="e.g., Weaken the argument"></textarea></label>
         <label><b>2. GIVEN</b><span>What did the stimulus actually establish?</span><textarea id="given" placeholder="Facts only. No additions."></textarea></label>
-        <label><b>3. TARGET</b><span>What must the correct answer accomplish?</span><textarea id="target" placeholder="Predict its function"></textarea></label>
+        <label><b>3. CONCLUSION</b><span>What claim is the argument trying to prove?</span><textarea id="conclusion" placeholder="State the conclusion in one sentence"></textarea></label>
         <label><b>4. GAP</b><span>Where is the reasoning vulnerable?</span><textarea id="gap" placeholder="Evidence → ? → conclusion"></textarea></label>
+        <label><b>5. TARGET</b><span>What must the correct answer accomplish?</span><textarea id="target" placeholder="Predict its function"></textarea></label>
+      </div>
+      <div class="autopsy-block">
+        <p class="eyebrow">Answer choices</p>
+        <h3>A–E elimination notes</h3>
+        <p class="hint">For each choice, write why it fails the JOB — or why it survives.</p>
+        <div class="choice-grid" id="choiceGrid">
+          <label><b>A</b><textarea id="choiceA" data-write="choiceA" placeholder="Eliminate because…"></textarea></label>
+          <label><b>B</b><textarea id="choiceB" data-write="choiceB" placeholder="Eliminate because…"></textarea></label>
+          <label><b>C</b><textarea id="choiceC" data-write="choiceC" placeholder="Eliminate because…"></textarea></label>
+          <label><b>D</b><textarea id="choiceD" data-write="choiceD" placeholder="Eliminate because…"></textarea></label>
+          <label><b>E</b><textarea id="choiceE" data-write="choiceE" placeholder="Eliminate because…"></textarea></label>
+        </div>
+      </div>
+      <div class="autopsy-review">
+        <label class="wide"><b>Credited answer / why it works</b><span>What does the correct choice do that the others do not?</span><textarea id="credited" placeholder="It works because it…"></textarea></label>
+        <label class="wide"><b>Next-time rule</b><span>One reusable rule from this question.</span><textarea id="autopsyRule" placeholder="Before I pick, I will…"></textarea></label>
       </div>
       <div class="proof-strip"><strong>STOP AT THE PERIOD.</strong><span>Before adding an idea, ask:</span><button id="proofButton">WHERE DOES IT SAY THAT?</button></div>
     </section>
@@ -90,13 +111,31 @@
         <label>What fooled me?<textarea id="fooled"></textarea></label>
         <label>Why was it attractive?<textarea id="attractive"></textarea></label>
         <label>What did I overlook?<textarea id="overlooked"></textarea></label>
+        <label for="missType">Miss type
+          <select id="missType">
+            <option value="">Choose one…</option>
+            <option value="reasoning">Reasoning</option>
+            <option value="reading">Reading</option>
+            <option value="attention">Attention</option>
+            <option value="timing">Timing</option>
+            <option value="question-job">Question-job identification</option>
+          </select>
+        </label>
         <label>Next-time rule<textarea id="nextRule"></textarea></label>
         <button id="saveMistake" class="primary">Save to error log</button>
       </article>
     </section>
 
     <section class="panel">
-      <div class="section-head"><div><p class="eyebrow">Progress</p><h2>Error Log</h2></div><button id="clearLog" class="ghost">Clear log</button></div>
+      <div class="section-head">
+        <div><p class="eyebrow">Progress</p><h2>Error Log</h2></div>
+        <div class="button-row compact">
+          <button id="exportData" class="ghost">Export data</button>
+          <button id="importData" class="ghost">Import data</button>
+          <input id="importFile" type="file" accept="application/json,.json" hidden />
+          <button id="clearLog" class="ghost">Clear log</button>
+        </div>
+      </div>
       <div id="errorLog" class="error-log"></div>
     </section>
   </main>
