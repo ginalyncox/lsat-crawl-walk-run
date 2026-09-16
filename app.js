@@ -61,6 +61,160 @@ const missLabels={
   timing:'Timing',
   'question-job':'Question-job identification'
 };
+const missCoaching={
+  reasoning:{
+    ask:'Did I attack the GAP, or just the topic?',
+    next:'Re-work one miss with Argument Autopsy before looking at choices.',
+    href:'#framework',
+    cta:'Open Argument Autopsy'
+  },
+  reading:{
+    ask:'Where does it say that?',
+    next:'Map one passage with paragraph roles — stay inside the text.',
+    href:'#rcMap',
+    cta:'Open Verbal Passage Map'
+  },
+  attention:{
+    ask:'What is my job RIGHT NOW?',
+    next:'Do one crawl question with no speed pressure.',
+    href:'#practiceSession',
+    cta:'Start a crawl practice'
+  },
+  timing:{
+    ask:'Did the clock change my process?',
+    next:'Run Compare: untimed → timed on the same questions.',
+    href:'#practiceSession',
+    cta:'Open Practice Session'
+  },
+  'question-job':{
+    ask:'What does the stem ask me to do?',
+    next:'Name the JOB on the Decision Mat before opening A–E.',
+    href:'#decisionMat',
+    cta:'Open Decision Mat'
+  }
+};
+
+function collectMissEvents(source='all'){
+  const events=[];
+  if(source==='all'||source==='error-log'){
+    getLog().forEach((x,i)=>{
+      if(!x.missType)return;
+      events.push({
+        miss:x.missType,
+        source:'error-log',
+        rule:x.rule||'',
+        note:x.fooled||x.overlooked||'',
+        label:'',
+        at:x.at||x.date||'',
+        order:i
+      });
+    });
+  }
+  if(source==='all'||source==='practice'){
+    const queues=loadPracticeQueues();
+    [...queues.misses,...queues.flags].forEach((item,i)=>{
+      const miss=item.miss||'';
+      if(!miss)return;
+      events.push({
+        miss,
+        source:'practice',
+        rule:item.blindNote||'',
+        note:item.note||'',
+        label:item.label||'',
+        at:item.savedAt||'',
+        order:i,
+        result:item.result||''
+      });
+    });
+  }
+  return events;
+}
+
+function summarizeMissPatterns(source='all'){
+  const events=collectMissEvents(source);
+  const counts={};
+  const bySource={};
+  Object.keys(missLabels).forEach(k=>{counts[k]=0;bySource[k]={errorLog:0,practice:0}});
+  events.forEach(e=>{
+    if(!counts.hasOwnProperty(e.miss))return;
+    counts[e.miss]+=1;
+    if(e.source==='error-log')bySource[e.miss].errorLog+=1;
+    else bySource[e.miss].practice+=1;
+  });
+  const ranked=Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+  const total=ranked.reduce((n,[,c])=>n+c,0);
+  const top=total?ranked.find(([,c])=>c>0)||null:null;
+  const rules=top
+    ?events.filter(e=>e.miss===top[0]&&(e.rule||e.note)).slice(0,4)
+    :[];
+  return {events,counts,bySource,ranked,total,top,rules};
+}
+
+function renderMissPatterns(){
+  const focusEl=$('missPatternFocus');
+  const barsEl=$('missPatternBars');
+  const rulesEl=$('missPatternRules');
+  if(!focusEl||!barsEl||!rulesEl)return;
+  const source=$('missPatternSource')?.value||'all';
+  const summary=summarizeMissPatterns(source);
+
+  if(!summary.total){
+    focusEl.innerHTML=`
+      <p class="eyebrow">No pattern yet</p>
+      <h3>Log a miss to see your focus</h3>
+      <p class="hint">Use Mistake Detective or tag a practice miss. Patterns appear here — one focus at a time.</p>
+      <div class="button-row">
+        <a class="primary" href="#errorLogSection" style="text-decoration:none;display:inline-block">Go to Mistake Detective / Error Log</a>
+      </div>`;
+    barsEl.innerHTML='';
+    rulesEl.innerHTML='';
+    return;
+  }
+
+  const [topId,topCount]=summary.top;
+  const coach=missCoaching[topId]||{ask:'What is my job RIGHT NOW?',next:'Re-do one miss slowly.',href:'#framework',cta:'Open Argument Autopsy'};
+  const pct=Math.round((topCount/summary.total)*100);
+  focusEl.innerHTML=`
+    <p class="eyebrow">Primary focus</p>
+    <h3>${escapeHtml(missLabels[topId]||topId)} · ${topCount} of ${summary.total} (${pct}%)</h3>
+    <p><strong>Ask:</strong> ${escapeHtml(coach.ask)}</p>
+    <p><strong>Next drill:</strong> ${escapeHtml(coach.next)}</p>
+    <div class="button-row">
+      <a class="primary" href="${coach.href}" style="text-decoration:none;display:inline-block">${escapeHtml(coach.cta)}</a>
+      <a class="ghost" href="#trapDeck" style="text-decoration:none;display:inline-block;padding:.7rem 1rem;border:2px solid var(--ink);border-radius:9px;font-weight:800">Review traps</a>
+    </div>`;
+
+  const max=Math.max(...summary.ranked.map(([,c])=>c),1);
+  barsEl.innerHTML=summary.ranked.map(([id,count])=>{
+    const width=count?Math.max(8,Math.round((count/max)*100)):0;
+    const src=summary.bySource[id]||{errorLog:0,practice:0};
+    const meta=count?`${src.errorLog} error log · ${src.practice} practice`:'No tags yet';
+    return `<div class="miss-bar-row">
+      <p class="miss-bar-label">${escapeHtml(missLabels[id]||id)}</p>
+      <div class="miss-bar-track" aria-hidden="true"><div class="miss-bar-fill" style="width:${width}%"></div></div>
+      <p class="miss-bar-count">${count}</p>
+      <p class="miss-bar-meta">${escapeHtml(meta)}</p>
+    </div>`;
+  }).join('');
+
+  if(!summary.rules.length){
+    rulesEl.innerHTML=`<p class="hint">No next-time rules attached to ${escapeHtml(missLabels[topId]||topId)} yet. Add one in Mistake Detective.</p>`;
+  }else{
+    rulesEl.innerHTML=`<p class="eyebrow">Recent notes for ${escapeHtml(missLabels[topId]||topId)}</p>`+
+      summary.rules.map(r=>{
+        const title=r.label?escapeHtml(r.label):(r.source==='error-log'?'Error log':'Practice');
+        const body=escapeHtml(r.rule||r.note||'');
+        return `<article class="miss-rule-card"><p><strong>${title}</strong></p><p>${body}</p></article>`;
+      }).join('');
+  }
+}
+
+function initMissPatterns(){
+  renderMissPatterns();
+  $('missPatternSource')?.addEventListener('change',renderMissPatterns);
+  $('printMissPatterns')?.addEventListener('click',()=>printSection('missPatterns'));
+}
+
 const preflightFields=[
   ['preIssue','ISSUE','What conflict or question must the essay address?'],
   ['prePosition','MY POSITION','What do I conclude?'],
@@ -386,6 +540,7 @@ function renderPracticeQueues(){
   const missEl=$('missQueueList');
   if(flagEl)flagEl.innerHTML=queues.flags.length?queues.flags.map(i=>queueItemHTML(i,'flag')).join(''):'<p class="hint">No flagged questions yet.</p>';
   if(missEl)missEl.innerHTML=queues.misses.length?queues.misses.map(i=>queueItemHTML(i,'miss')).join(''):'<p class="hint">No misses logged from practice yet.</p>';
+  renderMissPatterns();
 }
 
 function clearPracticeTimer(){if(practice.timerId){clearInterval(practice.timerId);practice.timerId=null}}
@@ -533,8 +688,9 @@ function renderPracticeSummary(){
     <div><p class="eyebrow">Miss patterns</p>${missHtml}</div>
     ${compareHtml}
     <p>${escapeHtml(focusText)}</p>
-    <p class="hint">Accuracy first. Speed only after the process is repeatable. Flagged/missed items stay in Review Queues below.</p>`;
+    <p class="hint">Accuracy first. Speed only after the process is repeatable. Flagged/missed items stay in Review Queues below. See <a href="#missPatterns">Miss Pattern Board</a> for your top focus.</p>`;
   if($('startComparePass'))$('startComparePass').hidden=!showCompareBtn;
+  renderMissPatterns();
 }
 function enqueueFromEntry(entry){
   const pass=practice.timing==='compare'?(practice.comparePass||'untimed'):practice.timing;
@@ -675,12 +831,14 @@ function renderLog(){
     const miss=x.missType&&missLabels[x.missType]?`<span class="miss-tag">${escapeHtml(missLabels[x.missType])}</span>`:'';
     return `<article class="error-item"><time>${escapeHtml(x.date||'')}</time>${miss}<p><strong>Fooled me:</strong> ${escapeHtml(x.fooled)}</p><p><strong>Why it was attractive:</strong> ${escapeHtml(x.attractive)}</p><p><strong>Overlooked:</strong> ${escapeHtml(x.overlooked)}</p><p><strong>Next-time rule:</strong> ${escapeHtml(x.rule)}</p></article>`;
   }).join(''):'<p class="empty">No mistakes logged yet. That is not the goal forever — mistakes become rules here.</p>';
+  renderMissPatterns();
 }
 $('saveMistake').onclick=()=>{
   if(!$('fooled').value.trim()&&!$('nextRule').value.trim()){toast('Write what fooled you or a next-time rule');return}
   const log=getLog();
   log.unshift({
     date:new Date().toLocaleDateString(),
+    at:new Date().toISOString(),
     fooled:$('fooled').value,
     attractive:$('attractive').value,
     overlooked:$('overlooked').value,
@@ -738,6 +896,7 @@ function importStudyData(file){
       restoreDraft();
       renderLog();
       renderPracticeQueues();
+      renderMissPatterns();
       toast('Study data imported');
     }catch(err){
       toast('Import failed — use a valid export file');
@@ -754,3 +913,4 @@ $('importFile').addEventListener('change',e=>{
 });
 
 renderLog();
+initMissPatterns();
