@@ -35,6 +35,7 @@ Two reset questions run through the app: **What is my job RIGHT NOW?** and **Whe
 - Flag & return + miss review queues (localStorage)
 - Aphantasia-friendly RC verbal passage mapper
 - Mistake Detective with miss-type classification + persistent local error log
+- Miss Pattern Board (aggregated focus from error log + practice queues)
 - Autosaved working notes with a visible save-state indicator
 - Export / import of local study data (JSON), including practice queues
 - Responsive, keyboard-friendly, low-clutter interface
@@ -55,7 +56,7 @@ No build step or dependencies are required. Open `index.html` in a browser, or s
 
 ## Roadmap
 
-Next candidates include richer miss-pattern analytics and optional printable session sheets.
+Next candidates include optional printable session sheets and richer multi-device sync only if needed.
 
 ## Disclaimer
 

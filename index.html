@@ -40,6 +40,7 @@
     <a href="#practiceSession">Practice Session</a>
     <a href="#practiceQueues">Review Queues</a>
     <a href="#framework">Argument Autopsy</a>
+    <a href="#missPatterns">Miss Patterns</a>
     <a href="#errorLogSection">Error Log</a>
   </nav>
 
@@ -299,7 +300,7 @@
       <div class="translation-grid" id="translationGrid"></div>
     </section>
 
-    <section class="panel rc">
+    <section class="panel rc" id="rcMap">
       <p class="eyebrow">Reading Comprehension • no mental pictures required</p>
       <h2>Verbal Passage Map</h2>
       <p>Map what each paragraph <em>does</em>, not what it looks like.</p>
@@ -452,6 +453,29 @@
         </div>
       </div>
       <div class="study-card-grid" id="studyCardGrid"></div>
+    </section>
+
+    <section class="panel study-aid" id="missPatterns" aria-labelledby="missPatternsTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Reasoning patterns</p>
+          <h2 id="missPatternsTitle">Miss Pattern Board</h2>
+          <p class="hint">One focus at a time. Combines Mistake Detective entries and practice miss/flag queues — not a scoreboard.</p>
+        </div>
+        <div class="button-row compact no-print">
+          <label class="inline-label">Source
+            <select id="missPatternSource">
+              <option value="all">All sources</option>
+              <option value="error-log">Error log only</option>
+              <option value="practice">Practice queues only</option>
+            </select>
+          </label>
+          <button type="button" id="printMissPatterns" class="ghost">Print Board</button>
+        </div>
+      </div>
+      <div id="missPatternFocus" class="miss-focus" aria-live="polite"></div>
+      <div id="missPatternBars" class="miss-bars" aria-label="Miss counts by type"></div>
+      <div id="missPatternRules" class="miss-rules"></div>
     </section>
 
     <section class="panel" id="errorLogSection">

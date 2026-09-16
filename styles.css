@@ -135,6 +135,29 @@ body[data-print="progressBoard"] .progress-legend{color:#000}
 .queue-item{background:#fff;border:1px solid var(--line);border-radius:10px;padding:.7rem .8rem}
 .queue-item p{margin:.15rem 0}
 @media(max-width:800px){.practice-queues{grid-template-columns:1fr}}
+.miss-focus{margin:.4rem 0 1rem;padding:1rem 1.1rem;background:linear-gradient(180deg,var(--soft),#fff);border:1px solid var(--line);border-radius:12px}
+.miss-focus h3{margin:.15rem 0 .45rem;font-size:1.2rem}
+.miss-focus p{margin:.3rem 0}
+.miss-focus .button-row{margin-top:.75rem}
+.miss-bars{display:grid;gap:.55rem;margin-bottom:1rem}
+.miss-bar-row{display:grid;grid-template-columns:minmax(8rem,11rem) 1fr auto;gap:.6rem;align-items:center}
+.miss-bar-label{margin:0;font-weight:800;font-size:.95rem}
+.miss-bar-track{height:.75rem;background:#fff;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.miss-bar-fill{height:100%;background:var(--accent);border-radius:999px;min-width:0}
+.miss-bar-count{margin:0;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
+.miss-bar-meta{grid-column:1 / -1;margin:-.15rem 0 .2rem;color:var(--muted);font-size:.85rem}
+.miss-rules{display:grid;gap:.55rem}
+.miss-rule-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:.85rem 1rem}
+.miss-rule-card p{margin:.2rem 0}
+@media(max-width:700px){.miss-bar-row{grid-template-columns:1fr auto}.miss-bar-label{grid-column:1 / -1}}
+
+body[data-print="missPatterns"] #missPatterns{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
+body[data-print="missPatterns"] .section-head .button-row,
+body[data-print="missPatterns"] .inline-label{display:none!important}
+body[data-print] .miss-focus,
+body[data-print] .miss-rule-card{border:1px solid #444;background:#fff;break-inside:avoid}
+body[data-print] .miss-bar-fill{background:#333}
+
 .study-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem}
 .study-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:1rem;min-height:170px;break-inside:avoid}
 .study-card h3{margin:.15rem 0 .55rem;font-size:1.12rem}

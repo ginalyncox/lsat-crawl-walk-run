@@ -233,6 +233,13 @@ Allow the user to mark exactly where they stopped and return there later.
 6. Miss review queue. ✅
 7. Session summary based on reasoning patterns, not just score. ✅ (basic miss-pattern summary; richer analytics still optional)
 
+### Phase C+ — miss-pattern analytics
+
+1. Miss Pattern Board aggregating error log + practice queues. ✅
+2. Primary focus recommendation with a concrete next drill. ✅
+3. Source filter (all / error log / practice). ✅
+4. Printable pattern board. ✅
+
 ### Phase D — optional richer architecture
 
 Only consider a framework or backend when concrete needs appear, such as:
