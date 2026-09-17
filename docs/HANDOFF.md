@@ -240,6 +240,13 @@ Allow the user to mark exactly where they stopped and return there later.
 3. Source filter (all / error log / practice). ✅
 4. Printable pattern board. ✅
 
+### Phase C++ — printable session aids
+
+1. One-question printable session sheet. ✅
+2. Load sheet from Argument Autopsy draft. ✅
+3. One-page test-day reset card. ✅
+4. Today panel focus line from Miss Pattern Board. ✅
+
 ### Phase D — optional richer architecture
 
 Only consider a framework or backend when concrete needs appear, such as:
@@ -294,7 +301,8 @@ Potential outputs:
 - RC role tracker
 - conditional logic tiles
 - Writing Preflight sheet
-- one-page test-day reset card
+- one-page test-day reset card ✅
+- one-question session sheet ✅
 
 Avoid tiny text. Favor large cards and generous spacing.
 
