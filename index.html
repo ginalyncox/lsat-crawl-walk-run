@@ -37,6 +37,8 @@
     <a href="#writingPreflight">Writing Preflight</a>
     <a href="#progressBoard">Progress Board</a>
     <a href="#studyCards">Study Cards</a>
+    <a href="#sessionSheet">Session Sheet</a>
+    <a href="#testDayReset">Test-Day Reset</a>
     <a href="#practiceSession">Practice Session</a>
     <a href="#practiceQueues">Review Queues</a>
     <a href="#framework">Argument Autopsy</a>
@@ -50,10 +52,12 @@
         <p class="eyebrow">Minimum viable study day</p>
         <h2 id="phaseTitle">CRAWL: Learn the reasoning</h2>
         <p id="phaseText">No speed pressure. Do one question carefully and explain why every answer is right or wrong.</p>
+        <p id="todayFocus" class="today-focus hint">Log a few misses to unlock today’s focus from the Miss Pattern Board.</p>
       </div>
       <div class="today-actions no-print">
         <button type="button" id="oneQuestion" class="primary">Start 1-question session</button>
         <button type="button" id="fiveQuestion" class="ghost">Start 5-question mini-set</button>
+        <button type="button" id="printSessionSheetQuick" class="ghost">Print session sheet</button>
       </div>
     </section>
 
@@ -453,6 +457,114 @@
         </div>
       </div>
       <div class="study-card-grid" id="studyCardGrid"></div>
+    </section>
+
+    <section class="panel study-aid" id="sessionSheet" aria-labelledby="sessionSheetTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Printable practice</p>
+          <h2 id="sessionSheetTitle">One-Question Session Sheet</h2>
+          <p class="hint">Fill by hand next to your PrepTest, or load from the Argument Autopsy draft and print. No copyrighted stems included.</p>
+        </div>
+        <div class="button-row compact no-print">
+          <button type="button" id="loadSessionFromAutopsy" class="ghost">Load from Autopsy</button>
+          <button type="button" id="clearSessionSheet" class="ghost">Clear sheet</button>
+          <button type="button" id="printSessionSheet" class="primary">Print Sheet</button>
+        </div>
+      </div>
+      <div class="session-sheet">
+        <div class="session-meta two-col tight">
+          <label><b>PrepTest label</b><span>e.g., PT73 S1 Q14</span><input id="sheetLabel" type="text" placeholder="PT · Section · Q" /></label>
+          <label><b>Date / phase</b><span>Optional</span><input id="sheetDate" type="text" placeholder="Date · Crawl/Walk/Run" /></label>
+        </div>
+        <div class="session-grid">
+          <label><b>1. JOB</b><span>What am I being asked to do?</span><textarea id="sheetJob" placeholder="Weaken / Strengthen / Flaw…"></textarea></label>
+          <label><b>2. GIVEN</b><span>What did the stimulus actually establish?</span><textarea id="sheetGiven" placeholder="Facts only"></textarea></label>
+          <label><b>3. CONCLUSION</b><span>What claim is the argument trying to prove?</span><textarea id="sheetConclusion"></textarea></label>
+          <label><b>4. GAP</b><span>Where is the reasoning vulnerable?</span><textarea id="sheetGap" placeholder="Evidence → ? → conclusion"></textarea></label>
+          <label><b>5. TARGET</b><span>What must the correct answer accomplish?</span><textarea id="sheetTarget"></textarea></label>
+        </div>
+        <div class="session-choices">
+          <p class="eyebrow">Eliminate A–E</p>
+          <div class="choice-grid">
+            <label><b>A</b><textarea id="sheetA" placeholder="Eliminate because…"></textarea></label>
+            <label><b>B</b><textarea id="sheetB" placeholder="Eliminate because…"></textarea></label>
+            <label><b>C</b><textarea id="sheetC" placeholder="Eliminate because…"></textarea></label>
+            <label><b>D</b><textarea id="sheetD" placeholder="Eliminate because…"></textarea></label>
+            <label><b>E</b><textarea id="sheetE" placeholder="Eliminate because…"></textarea></label>
+          </div>
+        </div>
+        <div class="session-review two-col tight">
+          <label><b>Credited answer / why</b><textarea id="sheetCredited" placeholder="It works because…"></textarea></label>
+          <label><b>Next-time rule</b><textarea id="sheetRule" placeholder="Before I pick, I will…"></textarea></label>
+        </div>
+        <div class="session-result two-col tight">
+          <label for="sheetResult"><b>Result</b>
+            <select id="sheetResult">
+              <option value="">Choose…</option>
+              <option value="correct">Correct</option>
+              <option value="wrong">Wrong</option>
+              <option value="unsure">Unsure / flagged</option>
+            </select>
+          </label>
+          <label for="sheetMiss"><b>Miss type</b>
+            <select id="sheetMiss">
+              <option value="">Optional…</option>
+              <option value="reasoning">Reasoning</option>
+              <option value="reading">Reading</option>
+              <option value="attention">Attention</option>
+              <option value="timing">Timing</option>
+              <option value="question-job">Question-job identification</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel study-aid" id="testDayReset" aria-labelledby="testDayResetTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">One-page pocket card</p>
+          <h2 id="testDayResetTitle">Test-Day Reset Card</h2>
+          <p class="hint">Print this. Keep it beside you. One job at a time — no new system on test day.</p>
+        </div>
+        <div class="button-row compact no-print">
+          <button type="button" id="printTestDayReset" class="primary">Print Reset Card</button>
+        </div>
+      </div>
+      <div class="reset-print" id="testDayResetBody">
+        <div class="reset-print-hero">
+          <p class="eyebrow">RIGHT NOW</p>
+          <h3>What is my job?</h3>
+          <p>Where does it say that? · Interesting ≠ relevant · STOP at the period.</p>
+        </div>
+        <ol class="reset-print-steps">
+          <li><strong>JOB</strong> — Name the stem task before opening A–E.</li>
+          <li><strong>GIVEN</strong> — Facts only. No improvements.</li>
+          <li><strong>CONCLUSION</strong> — What is the argument trying to prove?</li>
+          <li><strong>GAP</strong> — Where is the evidence → conclusion link weak?</li>
+          <li><strong>TARGET</strong> — What must the credited answer do?</li>
+          <li><strong>Prove</strong> — Eliminate traps. Explain why the credited answer works.</li>
+        </ol>
+        <div class="reset-print-grid">
+          <div>
+            <p class="eyebrow">If stuck</p>
+            <ul>
+              <li>Flag and return.</li>
+              <li>Re-state JOB in one phrase.</li>
+              <li>Ask: does this do the TARGET?</li>
+            </ul>
+          </div>
+          <div>
+            <p class="eyebrow">Miss types</p>
+            <ul>
+              <li>Reasoning · Reading · Attention</li>
+              <li>Timing · Question-job ID</li>
+            </ul>
+          </div>
+        </div>
+        <p id="resetCardFocus" class="reset-print-focus">Today’s focus: keep externalizing JOB → GAP before answer choices.</p>
+      </div>
     </section>
 
     <section class="panel study-aid" id="missPatterns" aria-labelledby="missPatternsTitle">

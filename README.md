@@ -29,6 +29,8 @@ Two reset questions run through the app: **What is my job RIGHT NOW?** and **Whe
 - Printable Writing Preflight sheet (15-minute plan)
 - Crawl / Walk / Run Progress Board (skill stages, not streaks)
 - Printable Study Card Generator (JOB / trap / translation / logic decks)
+- Printable One-Question Session Sheet (blank or load from Autopsy)
+- Printable Test-Day Reset Card (pocket process card)
 - Guided practice sessions (1-question and 5-question mini-set)
 - Untimed → timed comparison pass
 - Blind-review gate after misses/flags
@@ -56,7 +58,7 @@ No build step or dependencies are required. Open `index.html` in a browser, or s
 
 ## Roadmap
 
-Next candidates include optional printable session sheets and richer multi-device sync only if needed.
+Next candidates include richer multi-device sync only if a concrete need appears.
 
 ## Disclaimer
 

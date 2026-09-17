@@ -150,6 +150,26 @@ function summarizeMissPatterns(source='all'){
   return {events,counts,bySource,ranked,total,top,rules};
 }
 
+function updateTodayFocus(){
+  const el=$('todayFocus');
+  const resetEl=$('resetCardFocus');
+  const summary=summarizeMissPatterns('all');
+  if(!summary.total||!summary.top){
+    if(el)el.innerHTML='Log a few misses to unlock today’s focus from the <a href="#missPatterns">Miss Pattern Board</a>.';
+    if(resetEl)resetEl.textContent='Today’s focus: keep externalizing JOB → GAP before answer choices.';
+    return;
+  }
+  const [topId,topCount]=summary.top;
+  const coach=missCoaching[topId]||{};
+  const label=missLabels[topId]||topId;
+  if(el){
+    el.innerHTML=`Today’s focus: <strong>${escapeHtml(label)}</strong> (${topCount}/${summary.total}). ${escapeHtml(coach.next||'One careful miss review.')} <a href="#missPatterns">See patterns</a>`;
+  }
+  if(resetEl){
+    resetEl.textContent=`Today’s focus: ${label} — ${coach.ask||'What is my job RIGHT NOW?'}`;
+  }
+}
+
 function renderMissPatterns(){
   const focusEl=$('missPatternFocus');
   const barsEl=$('missPatternBars');
@@ -157,6 +177,7 @@ function renderMissPatterns(){
   if(!focusEl||!barsEl||!rulesEl)return;
   const source=$('missPatternSource')?.value||'all';
   const summary=summarizeMissPatterns(source);
+  updateTodayFocus();
 
   if(!summary.total){
     focusEl.innerHTML=`
@@ -239,8 +260,14 @@ const progressStages=['learning','untimed','timed','automatic'];
 const progressStageLabels={learning:'Learning',untimed:'Untimed',timed:'Timed',automatic:'Automatic'};
 
 const $=id=>document.getElementById(id);
-const fields=['job','given','conclusion','gap','target','credited','autopsyRule','mainPoint','viewAuthor','viewA','viewB','viewAgrees','viewDisagrees','viewWhy','viewAuthorMove','logicSentence','preIssue','prePosition','preReason1','preReason2','preOpposition','preWhatRight','preWhyWin','preOrder','fooled','attractive','overlooked','nextRule','missType'];
+const fields=['job','given','conclusion','gap','target','credited','autopsyRule','mainPoint','viewAuthor','viewA','viewB','viewAgrees','viewDisagrees','viewWhy','viewAuthorMove','logicSentence','preIssue','prePosition','preReason1','preReason2','preOpposition','preWhatRight','preWhyWin','preOrder','fooled','attractive','overlooked','nextRule','missType','sheetLabel','sheetDate','sheetJob','sheetGiven','sheetConclusion','sheetGap','sheetTarget','sheetA','sheetB','sheetC','sheetD','sheetE','sheetCredited','sheetRule','sheetResult','sheetMiss'];
 const autopsyFields=['job','given','conclusion','gap','target','choiceA','choiceB','choiceC','choiceD','choiceE','credited','autopsyRule'];
+const sessionSheetFields=['sheetLabel','sheetDate','sheetJob','sheetGiven','sheetConclusion','sheetGap','sheetTarget','sheetA','sheetB','sheetC','sheetD','sheetE','sheetCredited','sheetRule','sheetResult','sheetMiss'];
+const sheetFromAutopsy={
+  sheetJob:'job',sheetGiven:'given',sheetConclusion:'conclusion',sheetGap:'gap',sheetTarget:'target',
+  sheetA:'choiceA',sheetB:'choiceB',sheetC:'choiceC',sheetD:'choiceD',sheetE:'choiceE',
+  sheetCredited:'credited',sheetRule:'autopsyRule'
+};
 let saveTimer=null;
 
 function escapeHtml(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
@@ -822,6 +849,35 @@ function renderStudyCards(){
 $('studyCardDeck').addEventListener('change',renderStudyCards);
 $('printStudyCards').onclick=()=>printSection('studyCards');
 renderStudyCards();
+
+function loadSessionFromAutopsy(){
+  Object.entries(sheetFromAutopsy).forEach(([sheetId,srcId])=>{
+    const src=$(srcId); const dest=$(sheetId);
+    if(src&&dest)dest.value=src.value;
+  });
+  if($('sheetDate')&&!$('sheetDate').value.trim()){
+    const phase=localStorage.getItem('lsat-phase')||'crawl';
+    $('sheetDate').value=`${new Date().toLocaleDateString()} · ${phase}`;
+  }
+  saveDraft();
+  toast('Session sheet loaded from Autopsy draft');
+}
+function clearSessionSheet(){
+  sessionSheetFields.forEach(id=>{const el=$(id);if(el)el.value=''});
+  saveDraft();
+  toast('Session sheet cleared');
+}
+$('loadSessionFromAutopsy')?.addEventListener('click',loadSessionFromAutopsy);
+$('clearSessionSheet')?.addEventListener('click',clearSessionSheet);
+$('printSessionSheet')?.addEventListener('click',()=>printSection('sessionSheet'));
+$('printSessionSheetQuick')?.addEventListener('click',()=>{
+  document.getElementById('sessionSheet')?.scrollIntoView({behavior:'smooth'});
+  printSection('sessionSheet');
+});
+$('printTestDayReset')?.addEventListener('click',()=>{
+  updateTodayFocus();
+  printSection('testDayReset');
+});
 
 
 function getLog(){return JSON.parse(localStorage.getItem('lsat-errors')||'[]')}

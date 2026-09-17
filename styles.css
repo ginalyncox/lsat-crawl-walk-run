@@ -30,7 +30,9 @@ body[data-print="decisionMat"] #decisionMat,
 body[data-print="trapDeck"] #trapDeck,
 body[data-print="translationDict"] #translationDict,
 body[data-print="viewpointTracker"] #viewpointTracker,
-body[data-print="logicTiles"] #logicTiles{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
+body[data-print="logicTiles"] #logicTiles,
+body[data-print="sessionSheet"] #sessionSheet,
+body[data-print="testDayReset"] #testDayReset{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
 body[data-print] .decision-mat th,
 body[data-print] .decision-mat td{border:1px solid #444;padding:.45rem}
 body[data-print] .trap-deck{grid-template-columns:repeat(2,1fr);gap:.5rem}
@@ -157,6 +159,39 @@ body[data-print="missPatterns"] .inline-label{display:none!important}
 body[data-print] .miss-focus,
 body[data-print] .miss-rule-card{border:1px solid #444;background:#fff;break-inside:avoid}
 body[data-print] .miss-bar-fill{background:#333}
+
+.today-focus{margin:.55rem 0 0;max-width:38rem}
+.today-focus a{color:var(--ink);font-weight:800}
+.session-sheet{margin-top:.5rem}
+.session-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.7rem;margin-top:.8rem}
+.session-grid label,.session-choices label,.session-review label,.session-meta label,.session-result label{background:var(--soft);padding:.85rem;border-radius:12px;display:block}
+.session-choices{margin-top:1rem}
+.session-review,.session-result{margin-top:.9rem}
+.reset-print{margin-top:.4rem;padding:1rem;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#fff,var(--soft))}
+.reset-print-hero{padding:1rem;border:2px solid var(--ink);background:var(--focus);margin-bottom:1rem}
+.reset-print-hero h3{margin:.15rem 0 .35rem;font-size:1.6rem}
+.reset-print-hero p{margin:0;font-weight:700}
+.reset-print-steps{margin:.2rem 0 1rem;padding-left:1.25rem}
+.reset-print-steps li{margin:.35rem 0}
+.reset-print-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.reset-print-grid ul{margin:.35rem 0 0;padding-left:1.1rem}
+.reset-print-focus{margin:1rem 0 0;padding:.85rem 1rem;border:1px solid var(--line);border-radius:10px;background:#fff;font-weight:800}
+@media(max-width:900px){.session-grid{grid-template-columns:1fr 1fr}.reset-print-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.session-grid{grid-template-columns:1fr}}
+
+body[data-print="sessionSheet"] #sessionSheet,
+body[data-print="testDayReset"] #testDayReset{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
+body[data-print="sessionSheet"] .section-head .button-row,
+body[data-print="testDayReset"] .section-head .button-row{display:none!important}
+body[data-print] .session-grid label,
+body[data-print] .session-choices label,
+body[data-print] .session-review label,
+body[data-print] .session-meta label,
+body[data-print] .session-result label{border:1px solid #444;background:#fff;break-inside:avoid}
+body[data-print] .session-grid{grid-template-columns:repeat(2,1fr)}
+body[data-print] .reset-print{border:0;background:#fff;padding:0}
+body[data-print] .reset-print-hero{break-inside:avoid}
+body[data-print] .reset-print-focus{border:1px solid #444}
 
 .study-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem}
 .study-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:1rem;min-height:170px;break-inside:avoid}
