@@ -26,17 +26,27 @@ body[data-print] .no-print,
 body[data-print] .primary,
 body[data-print] .ghost{display:none!important}
 body[data-print] main > section{display:none!important}
+body[data-print="framework"] #framework,
 body[data-print="decisionMat"] #decisionMat,
 body[data-print="trapDeck"] #trapDeck,
 body[data-print="translationDict"] #translationDict,
 body[data-print="viewpointTracker"] #viewpointTracker,
 body[data-print="logicTiles"] #logicTiles,
+body[data-print="writingPreflight"] #writingPreflight,
+body[data-print="progressBoard"] #progressBoard,
+body[data-print="studyCards"] #studyCards,
 body[data-print="sessionSheet"] #sessionSheet,
-body[data-print="testDayReset"] #testDayReset{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
+body[data-print="testDayReset"] #testDayReset,
+body[data-print="missPatterns"] #missPatterns{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
 body[data-print] .decision-mat th,
 body[data-print] .decision-mat td{border:1px solid #444;padding:.45rem}
 body[data-print] .trap-deck{grid-template-columns:repeat(2,1fr);gap:.5rem}
 body[data-print] .trap-print-card{break-inside:avoid;border:1px solid #444;border-radius:0;background:#fff;min-height:0;padding:.7rem}
+body[data-print="framework"] .autopsy-core label,
+body[data-print="framework"] .autopsy-block label,
+body[data-print="framework"] .autopsy-review label{break-inside:avoid;border:1px solid #444;background:#fff;padding:.55rem}
+body[data-print="framework"] textarea{border:1px solid #666;min-height:3.2rem;background:#fff}
+body[data-print="framework"] .proof-strip{border:1px solid #444;break-inside:avoid}
 }
 
 
@@ -104,9 +114,6 @@ body[data-print] .logic-print-tile{break-inside:avoid;border:1px solid #444;bord
 .stage-option input{accent-color:var(--ink)}
 @media(max-width:800px){.preflight-grid{grid-template-columns:1fr}.progress-row{grid-template-columns:1fr}}
 
-body[data-print="writingPreflight"] #writingPreflight,
-body[data-print="progressBoard"] #progressBoard{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
-
 body[data-print] .preflight-grid{grid-template-columns:repeat(2,1fr);gap:.45rem}
 body[data-print] .preflight-grid label{break-inside:avoid;border:1px solid #444;background:#fff}
 body[data-print] .progress-row{break-inside:avoid;border:1px solid #444;background:#fff}
@@ -153,7 +160,6 @@ body[data-print="progressBoard"] .progress-legend{color:#000}
 .miss-rule-card p{margin:.2rem 0}
 @media(max-width:700px){.miss-bar-row{grid-template-columns:1fr auto}.miss-bar-label{grid-column:1 / -1}}
 
-body[data-print="missPatterns"] #missPatterns{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
 body[data-print="missPatterns"] .section-head .button-row,
 body[data-print="missPatterns"] .inline-label{display:none!important}
 body[data-print] .miss-focus,
@@ -179,8 +185,6 @@ body[data-print] .miss-bar-fill{background:#333}
 @media(max-width:900px){.session-grid{grid-template-columns:1fr 1fr}.reset-print-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.session-grid{grid-template-columns:1fr}}
 
-body[data-print="sessionSheet"] #sessionSheet,
-body[data-print="testDayReset"] #testDayReset{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
 body[data-print="sessionSheet"] .section-head .button-row,
 body[data-print="testDayReset"] .section-head .button-row{display:none!important}
 body[data-print] .session-grid label,
@@ -199,8 +203,6 @@ body[data-print] .reset-print-focus{border:1px solid #444}
 .study-card p{margin:.35rem 0}
 @media(max-width:900px){.practice-checklist,.study-card-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.practice-checklist,.study-card-grid{grid-template-columns:1fr}}
-
-body[data-print="studyCards"] #studyCards{display:block!important;border:0;box-shadow:none;padding:0;margin:0}
 
 body[data-print="studyCards"] .section-head .button-row,
 body[data-print="studyCards"] .inline-label{display:none!important}

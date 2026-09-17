@@ -32,6 +32,7 @@
     <a href="#decisionMat">LR Decision Mat</a>
     <a href="#trapDeck">Wrong-Answer Trap Deck</a>
     <a href="#translationDict">LR Translation Dictionary</a>
+    <a href="#rcMap">RC Passage Map</a>
     <a href="#viewpointTracker">RC Viewpoint Tracker</a>
     <a href="#logicTiles">Conditional Logic Tiles</a>
     <a href="#writingPreflight">Writing Preflight</a>
@@ -42,12 +43,13 @@
     <a href="#practiceSession">Practice Session</a>
     <a href="#practiceQueues">Review Queues</a>
     <a href="#framework">Argument Autopsy</a>
+    <a href="#mistakeDetective">Mistake Detective</a>
     <a href="#missPatterns">Miss Patterns</a>
     <a href="#errorLogSection">Error Log</a>
   </nav>
 
   <main id="main">
-    <section class="panel today">
+    <section class="panel today" id="today">
       <div>
         <p class="eyebrow">Minimum viable study day</p>
         <h2 id="phaseTitle">CRAWL: Learn the reasoning</h2>
@@ -207,7 +209,10 @@
           <h2 id="frameworkTitle">JOB → GIVEN → CONCLUSION → GAP → TARGET</h2>
           <p id="saveState" class="save-state" role="status" aria-live="polite">Draft ready</p>
         </div>
-        <button class="ghost" id="clearAutopsy">Clear worksheet</button>
+        <div class="button-row compact no-print">
+          <button type="button" class="ghost" id="clearAutopsy">Clear worksheet</button>
+          <button type="button" class="ghost" id="printAutopsy">Print Autopsy</button>
+        </div>
       </div>
       <div class="autopsy-core">
         <label><b>1. JOB</b><span>What am I being asked to do?</span><textarea id="job" placeholder="e.g., Weaken the argument"></textarea></label>
@@ -232,10 +237,10 @@
         <label class="wide"><b>Credited answer / why it works</b><span>What does the correct choice do that the others do not?</span><textarea id="credited" placeholder="It works because it…"></textarea></label>
         <label class="wide"><b>Next-time rule</b><span>One reusable rule from this question.</span><textarea id="autopsyRule" placeholder="Before I pick, I will…"></textarea></label>
       </div>
-      <div class="proof-strip"><strong>STOP AT THE PERIOD.</strong><span>Before adding an idea, ask:</span><button id="proofButton">WHERE DOES IT SAY THAT?</button></div>
+      <div class="proof-strip"><strong>STOP AT THE PERIOD.</strong><span>Before adding an idea, ask:</span><button type="button" id="proofButton" class="no-print">WHERE DOES IT SAY THAT?</button></div>
     </section>
 
-    <section class="two-col">
+    <section class="two-col" id="lrTools">
       <article class="panel">
         <p class="eyebrow">Question stem decoder</p>
         <h2>What is the JOB?</h2>
@@ -248,7 +253,7 @@
         <p class="eyebrow">Wrong-answer trainer</p>
         <h2>Why is this tempting?</h2>
         <div id="trapCard" class="trap-card" aria-live="polite"></div>
-        <div class="button-row"><button id="prevTrap" class="ghost">← Previous</button><button id="nextTrap" class="primary">Next trap →</button></div>
+        <div class="button-row no-print"><button type="button" id="prevTrap" class="ghost">← Previous</button><button type="button" id="nextTrap" class="primary">Next trap →</button></div>
       </article>
     </section>
 
@@ -260,7 +265,7 @@
           <p class="hint">Match the stem to the JOB, then ask the checkpoint before you touch the answers.</p>
         </div>
         <div class="button-row compact no-print">
-          <button id="printDecisionMat" class="ghost">Print Decision Mat</button>
+          <button type="button" id="printDecisionMat" class="ghost">Print Decision Mat</button>
         </div>
       </div>
       <div class="decision-mat-wrap">
@@ -281,7 +286,7 @@
           <p class="hint">Cut into cards. For each trap: what it looks like, why it tempts, what to ask, and a short original example.</p>
         </div>
         <div class="button-row compact no-print">
-          <button id="printTrapDeck" class="ghost">Print Trap Deck</button>
+          <button type="button" id="printTrapDeck" class="ghost">Print Trap Deck</button>
         </div>
       </div>
       <div class="trap-deck" id="trapDeckGrid"></div>
@@ -298,7 +303,7 @@
           <label class="filter-label" for="translationFilter">Filter
             <input id="translationFilter" type="search" placeholder="Search term…" autocomplete="off" />
           </label>
-          <button id="printTranslationDict" class="ghost">Print Dictionary</button>
+          <button type="button" id="printTranslationDict" class="ghost">Print Dictionary</button>
         </div>
       </div>
       <div class="translation-grid" id="translationGrid"></div>
@@ -309,7 +314,7 @@
       <h2>Verbal Passage Map</h2>
       <p>Map what each paragraph <em>does</em>, not what it looks like.</p>
       <div id="paragraphs" class="paragraphs"></div>
-      <div class="button-row"><button id="addParagraph" class="ghost">+ Add paragraph</button><button id="removeParagraph" class="ghost">− Remove</button></div>
+      <div class="button-row no-print"><button type="button" id="addParagraph" class="ghost">+ Add paragraph</button><button type="button" id="removeParagraph" class="ghost">− Remove</button></div>
       <label class="wide"><b>Main point in one sentence</b><span>The author is mainly doing ___ because ___.</span><textarea id="mainPoint"></textarea></label>
     </section>
 
@@ -321,8 +326,8 @@
           <p class="hint">Track who thinks what. No mental movie required — just labels, agreement, and why.</p>
         </div>
         <div class="button-row compact no-print">
-          <button id="clearViewpoints" class="ghost">Clear tracker</button>
-          <button id="printViewpointTracker" class="ghost">Print Tracker</button>
+          <button type="button" id="clearViewpoints" class="ghost">Clear tracker</button>
+          <button type="button" id="printViewpointTracker" class="ghost">Print Tracker</button>
         </div>
       </div>
       <div class="viewpoint-prompts" aria-label="RC check questions">
@@ -347,8 +352,8 @@
           <p class="hint">Build the relationship outside your head. Click tiles to arrange them, then say the meaning in plain language.</p>
         </div>
         <div class="button-row compact no-print">
-          <button id="clearLogicChain" class="ghost">Clear chain</button>
-          <button id="printLogicTiles" class="ghost">Print Tiles</button>
+          <button type="button" id="clearLogicChain" class="ghost">Clear chain</button>
+          <button type="button" id="printLogicTiles" class="ghost">Print Tiles</button>
         </div>
       </div>
 
@@ -380,8 +385,8 @@
           <p class="hint">Plan before drafting. Externalize the conflict so the essay has a job.</p>
         </div>
         <div class="button-row compact no-print">
-          <button id="clearWritingPreflight" class="ghost">Clear sheet</button>
-          <button id="printWritingPreflight" class="ghost">Print Preflight</button>
+          <button type="button" id="clearWritingPreflight" class="ghost">Clear sheet</button>
+          <button type="button" id="printWritingPreflight" class="ghost">Print Preflight</button>
         </div>
       </div>
       <div class="preflight-tip">
@@ -390,9 +395,9 @@
       <div class="preflight-grid" id="writingPreflightGrid"></div>
     </section>
 
-    <section class="panel">
+    <section class="panel" id="mistakeDetective" aria-labelledby="mistakeDetectiveTitle">
       <p class="eyebrow">Mistake detective</p>
-      <h2>Turn a miss into a rule</h2>
+      <h2 id="mistakeDetectiveTitle">Turn a miss into a rule</h2>
       <div class="two-col tight">
         <div>
           <label>What fooled me?<textarea id="fooled"></textarea></label>
@@ -411,7 +416,7 @@
             </select>
           </label>
           <label>Next-time rule<textarea id="nextRule"></textarea></label>
-          <button id="saveMistake" class="primary">Save to error log</button>
+          <button type="button" id="saveMistake" class="primary">Save to error log</button>
         </div>
       </div>
     </section>
@@ -424,7 +429,7 @@
           <p class="hint">Track stage, not streaks. Breaks are allowed. Moving sideways or backward is information, not failure.</p>
         </div>
         <div class="button-row compact no-print">
-          <button id="printProgressBoard" class="ghost">Print Board</button>
+          <button type="button" id="printProgressBoard" class="ghost">Print Board</button>
         </div>
       </div>
       <div class="progress-legend" aria-label="Stage meanings">
@@ -453,7 +458,7 @@
               <option value="mix">Mixed pack</option>
             </select>
           </label>
-          <button id="printStudyCards" class="ghost">Print Cards</button>
+          <button type="button" id="printStudyCards" class="ghost">Print Cards</button>
         </div>
       </div>
       <div class="study-card-grid" id="studyCardGrid"></div>
@@ -593,11 +598,11 @@
     <section class="panel" id="errorLogSection">
       <div class="section-head">
         <div><p class="eyebrow">Progress</p><h2>Error Log</h2></div>
-        <div class="button-row compact">
-          <button id="exportData" class="ghost">Export data</button>
-          <button id="importData" class="ghost">Import data</button>
+        <div class="button-row compact no-print">
+          <button type="button" id="exportData" class="ghost">Export data</button>
+          <button type="button" id="importData" class="ghost">Import data</button>
           <input id="importFile" type="file" accept="application/json,.json" hidden />
-          <button id="clearLog" class="ghost">Clear log</button>
+          <button type="button" id="clearLog" class="ghost">Clear log</button>
         </div>
       </div>
       <div id="errorLog" class="error-log"></div>

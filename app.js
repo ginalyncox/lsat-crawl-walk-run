@@ -185,7 +185,7 @@ function renderMissPatterns(){
       <h3>Log a miss to see your focus</h3>
       <p class="hint">Use Mistake Detective or tag a practice miss. Patterns appear here — one focus at a time.</p>
       <div class="button-row">
-        <a class="primary" href="#errorLogSection" style="text-decoration:none;display:inline-block">Go to Mistake Detective / Error Log</a>
+        <a class="primary" href="#mistakeDetective" style="text-decoration:none;display:inline-block">Go to Mistake Detective</a>
       </div>`;
     barsEl.innerHTML='';
     rulesEl.innerHTML='';
@@ -374,6 +374,7 @@ function printSection(sectionId){
   window.print();
   setTimeout(cleanup,1000);
 }
+$('printAutopsy')?.addEventListener('click',()=>printSection('framework'));
 $('printDecisionMat').onclick=()=>printSection('decisionMat');
 $('printTrapDeck').onclick=()=>printSection('trapDeck');
 $('printTranslationDict').onclick=()=>printSection('translationDict');
