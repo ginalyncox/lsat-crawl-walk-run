@@ -134,6 +134,10 @@ body[data-print="progressBoard"] .progress-legend{color:#000}
 .practice-timer.over{color:var(--danger)}
 .practice-checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem .8rem;margin-bottom:.9rem}
 .practice-checklist label{display:flex;gap:.45rem;align-items:flex-start;background:var(--soft);padding:.65rem .75rem;border-radius:10px}
+.practice-kit{display:flex;flex-wrap:wrap;gap:.45rem .7rem;margin:0 0 .85rem;padding:.65rem .75rem;background:var(--soft);border:1px solid var(--line);border-radius:10px}
+.practice-kit a,.practice-aid-link,.practice-steps-preview a{color:var(--ink);font-weight:800;text-underline-offset:2px}
+.practice-kit a{font-size:.9rem}
+.queue-item .queue-actions{margin-top:.55rem}
 .practice-result{margin-bottom:.8rem}
 .practice-blind{margin:1rem 0;padding:1rem;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--soft),#fff)}
 .practice-blind .eyebrow{margin-bottom:.25rem}

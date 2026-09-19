@@ -560,7 +560,15 @@ function queueItemHTML(item,kind){
   const note=escapeHtml(item.note||item.blindNote||'No note');
   const when=escapeHtml((item.savedAt||'').slice(0,10));
   const pass=item.pass?` · ${escapeHtml(item.pass)}`:'';
-  return `<article class="queue-item"><p><strong>${label}</strong> · Q${item.q} · ${escapeHtml(item.result||'')}${kind==='flag'?' ⚑':''}${miss}${pass}</p><p class="hint">${note} · ${when}</p></article>`;
+  const id=escapeHtml(item.id||'');
+  return `<article class="queue-item" data-queue-id="${id}" data-queue-kind="${kind}">
+    <p><strong>${label}</strong> · Q${item.q} · ${escapeHtml(item.result||'')}${kind==='flag'?' ⚑':''}${miss}${pass}</p>
+    <p class="hint">${note} · ${when}</p>
+    <div class="button-row compact queue-actions">
+      <button type="button" class="ghost" data-queue-action="autopsy">Open autopsy</button>
+      <button type="button" class="ghost" data-queue-action="detective">Log in Mistake Detective</button>
+    </div>
+  </article>`;
 }
 function renderPracticeQueues(){
   const queues=loadPracticeQueues();
@@ -569,6 +577,52 @@ function renderPracticeQueues(){
   if(flagEl)flagEl.innerHTML=queues.flags.length?queues.flags.map(i=>queueItemHTML(i,'flag')).join(''):'<p class="hint">No flagged questions yet.</p>';
   if(missEl)missEl.innerHTML=queues.misses.length?queues.misses.map(i=>queueItemHTML(i,'miss')).join(''):'<p class="hint">No misses logged from practice yet.</p>';
   renderMissPatterns();
+}
+function findQueueItem(id){
+  if(!id)return null;
+  const queues=loadPracticeQueues();
+  return queues.flags.find(i=>i.id===id)||queues.misses.find(i=>i.id===id)||null;
+}
+function scrollToAid(sectionId,focusId){
+  const section=document.getElementById(sectionId);
+  if(section)section.scrollIntoView({behavior:'smooth'});
+  if(focusId){
+    const el=$(focusId);
+    if(el)setTimeout(()=>el.focus(),250);
+  }
+}
+function openAutopsyAid(prefill){
+  if(prefill?.label&&$('practiceLabel')&&!$('practiceLabel').value.trim()){
+    $('practiceLabel').value=prefill.label;
+  }
+  scrollToAid('framework','job');
+}
+function openDetectiveAid(prefill={}){
+  if(prefill.miss&&$('missType'))$('missType').value=prefill.miss;
+  if(prefill.note&&$('fooled')&&!$('fooled').value.trim())$('fooled').value=prefill.note;
+  if(prefill.blindNote&&$('overlooked')&&!$('overlooked').value.trim())$('overlooked').value=prefill.blindNote;
+  if(prefill.label&&$('attractive')&&!$('attractive').value.trim()){
+    $('attractive').value=`From practice: ${prefill.label}`;
+  }
+  scrollToAid('mistakeDetective','fooled');
+}
+function handleQueueAction(btn){
+  const action=btn.dataset.queueAction;
+  const card=btn.closest('.queue-item');
+  const item=findQueueItem(card?.dataset.queueId);
+  if(!item){toast('Could not find that queue item');return}
+  if(action==='autopsy'){
+    openAutopsyAid({label:item.label});
+    toast('Autopsy open — rework this miss with JOB → GAP.');
+  }else if(action==='detective'){
+    openDetectiveAid({
+      miss:item.miss||'',
+      note:item.note||'',
+      blindNote:item.blindNote||'',
+      label:item.label||''
+    });
+    toast('Mistake Detective ready — turn this miss into a rule.');
+  }
 }
 
 function clearPracticeTimer(){if(practice.timerId){clearInterval(practice.timerId);practice.timerId=null}}
@@ -716,7 +770,7 @@ function renderPracticeSummary(){
     <div><p class="eyebrow">Miss patterns</p>${missHtml}</div>
     ${compareHtml}
     <p>${escapeHtml(focusText)}</p>
-    <p class="hint">Accuracy first. Speed only after the process is repeatable. Flagged/missed items stay in Review Queues below. See <a href="#missPatterns">Miss Pattern Board</a> for your top focus.</p>`;
+    <p class="hint">Accuracy first. Speed only after the process is repeatable. Rework flagged/missed items with <a href="#framework">Autopsy</a> or <a href="#mistakeDetective">Mistake Detective</a>. See <a href="#missPatterns">Miss Pattern Board</a> for your top focus.</p>`;
   if($('startComparePass'))$('startComparePass').hidden=!showCompareBtn;
   renderMissPatterns();
 }
@@ -792,7 +846,25 @@ on('cancelBlindReview',cancelBlindReview);
 on('startComparePass',startCompareTimedPass);
 on('clearFlagQueue',()=>clearPracticeQueue('flag'));
 on('clearMissQueue',()=>clearPracticeQueue('miss'));
-on('openAutopsy',()=>{document.getElementById('framework').scrollIntoView({behavior:'smooth'});$('job').focus()});
+on('openAutopsy',()=>openAutopsyAid());
+on('openDecisionMat',()=>scrollToAid('decisionMat'));
+on('openDetective',()=>openDetectiveAid({
+  miss:$('practiceMiss')?.value||'',
+  note:$('practiceNote')?.value||'',
+  label:$('practiceLabel')?.value||''
+}));
+on('openDetectiveFromBlind',()=>openDetectiveAid({
+  miss:pendingPracticeEntry?.miss||$('practiceMiss')?.value||'',
+  note:pendingPracticeEntry?.note||$('practiceNote')?.value||'',
+  blindNote:$('practiceBlindNote')?.value||'',
+  label:pendingPracticeEntry?.label||$('practiceLabel')?.value||''
+}));
+$('practiceQueues')?.addEventListener('click',e=>{
+  const btn=e.target.closest('[data-queue-action]');
+  if(!btn)return;
+  e.preventDefault();
+  handleQueueAction(btn);
+});
 on('restartPractice',()=>{
   practice.active=false;practice.results=[];practice.compareBaseline=[];practice.comparePass=null;
   clearPracticeTimer();hideBlindReview();savePractice();
