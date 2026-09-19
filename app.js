@@ -1127,6 +1127,14 @@ async function coachShareSnapshot(){
   URL.revokeObjectURL(a.href);
   toast('Coach snapshot downloaded');
 }
+function revealUnlockPanel(){
+  const panel=document.querySelector('.unlock-panel');
+  if(panel){
+    panel.open=true;
+    panel.scrollIntoView({behavior:'smooth'});
+  }
+  $('proUnlockInput')?.focus();
+}
 function wireMonetize(){
   const cfg=monetizeConfig();
   if($('proPriceLabel'))$('proPriceLabel').textContent=cfg.proPriceLabel;
@@ -1138,22 +1146,26 @@ function wireMonetize(){
       buy.href=cfg.proPaymentLink;
       buy.target='_blank';
       buy.rel='noopener noreferrer';
-      buy.addEventListener('click',()=>{if(!isPro())toast('Opening secure checkout…')});
+      buy.addEventListener('click',e=>{
+        if(isPro()){e.preventDefault();applyProUi();return}
+        toast('Opening secure checkout…');
+      });
     }else{
       buy.href='#pricing';
       buy.addEventListener('click',e=>{
-        if(isPro()){e.preventDefault();return}
         e.preventDefault();
-        document.querySelector('.unlock-panel')?.scrollIntoView({behavior:'smooth'});
+        if(isPro())return;
+        revealUnlockPanel();
         toast('Add your Stripe Payment Link in monetize-config.js, or enter an unlock code');
       });
     }
   }
 
-  $('restorePro')?.addEventListener('click',()=>{
-    document.querySelector('.unlock-panel')?.scrollIntoView({behavior:'smooth'});
-    $('proUnlockInput')?.focus();
+  window.addEventListener('storage',e=>{
+    if(e.key==='lsat-pro-unlocked')applyProUi();
   });
+
+  $('restorePro')?.addEventListener('click',revealUnlockPanel);
   $('applyProUnlock')?.addEventListener('click',()=>unlockProFromCode($('proUnlockInput')?.value));
   $('proUnlockInput')?.addEventListener('keydown',e=>{
     if(e.key==='Enter'){e.preventDefault();unlockProFromCode($('proUnlockInput').value)}
