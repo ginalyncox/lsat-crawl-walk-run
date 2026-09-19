@@ -189,6 +189,7 @@ function renderMissPatterns(){
       </div>`;
     barsEl.innerHTML='';
     rulesEl.innerHTML='';
+    renderProMissInsights(summary);
     return;
   }
 
@@ -228,6 +229,7 @@ function renderMissPatterns(){
         return `<article class="miss-rule-card"><p><strong>${title}</strong></p><p>${body}</p></article>`;
       }).join('');
   }
+  renderProMissInsights(summary);
 }
 
 function initMissPatterns(){
@@ -969,5 +971,237 @@ $('importFile').addEventListener('change',e=>{
   e.target.value='';
 });
 
+/* ——— Monetization / Pro ——— */
+function monetizeConfig(){
+  return Object.assign({
+    proPriceLabel:'$39',
+    proPriceNote:'one-time · full LSAT cycle',
+    proPaymentLink:'',
+    unlockQueryParam:'pro',
+    unlockQueryValue:'1',
+    unlockCodes:['CRAWL-PRO'],
+    tutoringUrl:'',
+    tutoringLabel:'Book a Crawl → Walk session',
+    b2bEmail:'',
+    b2bSubject:'Tutor / program license — LSAT Crawl Walk Run',
+    affiliates:[]
+  }, window.LSAT_MONETIZE||{});
+}
+function isPro(){return localStorage.getItem("lsat-pro-unlocked")==='1'}
+function setPro(on){
+  if(on)localStorage.setItem("lsat-pro-unlocked","1");
+  else localStorage.removeItem("lsat-pro-unlocked");
+  applyProUi();
+}
+function normalizeCode(s){return String(s||'').trim().toUpperCase().replace(/\s+/g,'')}
+function codesList(cfg){
+  const raw=cfg.unlockCodes;
+  if(Array.isArray(raw))return raw.map(normalizeCode).filter(Boolean);
+  return String(raw||'').split(',').map(normalizeCode).filter(Boolean);
+}
+function unlockProFromCode(code){
+  const cfg=monetizeConfig();
+  const ok=codesList(cfg).includes(normalizeCode(code));
+  if(!ok){toast('That unlock code was not recognized');return false}
+  setPro(true);
+  toast('Pro unlocked on this device');
+  return true;
+}
+function captureProReturn(){
+  const cfg=monetizeConfig();
+  const params=new URLSearchParams(location.search);
+  if(params.get(cfg.unlockQueryParam)===cfg.unlockQueryValue){
+    setPro(true);
+    toast('Welcome to Pro — kit + coach tools unlocked');
+    params.delete(cfg.unlockQueryParam);
+    const next=`${location.pathname}${params.toString()?`?${params}`:''}${location.hash||'#pricing'}`;
+    history.replaceState({},'',next);
+  }
+}
+function applyProUi(){
+  const pro=isPro();
+  const badge=$('proStatusBadge');
+  if(badge)badge.hidden=!pro;
+  const kit=$('proKit');
+  if(kit)kit.hidden=!pro;
+  const csv=$('exportMissCsv');
+  if(csv)csv.hidden=!pro;
+  const share=$('coachShare');
+  if(share)share.hidden=!pro;
+  const buy=$('buyPro');
+  if(buy){
+    buy.textContent=pro?'Pro unlocked':'Unlock Pro';
+    if(pro){
+      buy.href='#pricing';
+      buy.setAttribute('aria-disabled','true');
+    }
+  }
+  const hint=$('proCheckoutHint');
+  if(hint)hint.hidden=pro||!!monetizeConfig().proPaymentLink;
+  updateProKitFocus();
+  const insightsHost=$('missPatternBars');
+  if(insightsHost)renderProMissInsights(summarizeMissPatterns($('missPatternSource')?.value||'all'));
+}
+function updateProKitFocus(){
+  const el=$('proKitFocus');
+  if(!el)return;
+  const summary=summarizeMissPatterns('all');
+  if(!summary.total||!summary.top){
+    el.textContent='Today’s focus: keep externalizing JOB → GAP before answer choices.';
+    return;
+  }
+  const [topId]=summary.top;
+  const coach=missCoaching[topId]||{};
+  el.textContent=`Today’s focus: ${missLabels[topId]||topId} — ${coach.ask||'What is my job RIGHT NOW?'}`;
+}
+function renderProMissInsights(summary){
+  let box=$('missProInsights');
+  if(!isPro()||!summary||!summary.total){
+    if(box)box.remove();
+    return;
+  }
+  if(!box){
+    box=document.createElement('div');
+    box.id='missProInsights';
+    box.className='miss-pro-insights';
+    const bars=$('missPatternBars');
+    if(bars&&bars.parentNode)bars.parentNode.insertBefore(box,bars);
+    else return;
+  }
+  const rows=summary.ranked.map(([id,count])=>{
+    const src=summary.bySource[id]||{errorLog:0,practice:0};
+    const pct=Math.round((count/summary.total)*100);
+    return `<tr><th scope="row">${escapeHtml(missLabels[id]||id)}</th><td>${count}</td><td>${pct}%</td><td>${src.errorLog}</td><td>${src.practice}</td></tr>`;
+  }).join('');
+  box.innerHTML=`
+    <p class="eyebrow">Pro analytics</p>
+    <h3>Source breakdown</h3>
+    <table>
+      <thead><tr><th>Miss type</th><th>Total</th><th>%</th><th>Error log</th><th>Practice</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+function exportMissCsv(){
+  if(!isPro()){toast('Pro unlock required for CSV export');return}
+  const summary=summarizeMissPatterns($('missPatternSource')?.value||'all');
+  const lines=[['miss_type','label','total','error_log','practice']];
+  summary.ranked.forEach(([id,count])=>{
+    const src=summary.bySource[id]||{errorLog:0,practice:0};
+    lines.push([id,missLabels[id]||id,count,src.errorLog,src.practice]);
+  });
+  const csv=lines.map(row=>row.map(cell=>{
+    const s=String(cell);
+    return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;
+  }).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`lsat-miss-patterns-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('Miss pattern CSV downloaded');
+}
+async function coachShareSnapshot(){
+  if(!isPro()){toast('Pro unlock required for coach share');return}
+  const payload={
+    exportedAt:new Date().toISOString(),
+    phase:localStorage.getItem('lsat-phase')||'crawl',
+    errors:getLog(),
+    practiceQueues:loadPracticeQueues(),
+    missSummary:summarizeMissPatterns('all'),
+    draft:JSON.parse(localStorage.getItem('lsat-draft')||'{}')
+  };
+  const text=JSON.stringify(payload,null,2);
+  try{
+    if(navigator.clipboard?.writeText){
+      await navigator.clipboard.writeText(text);
+      toast('Coach snapshot copied — paste into email or notes');
+      return;
+    }
+  }catch(e){}
+  const blob=new Blob([text],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`lsat-coach-share-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('Coach snapshot downloaded');
+}
+function wireMonetize(){
+  const cfg=monetizeConfig();
+  if($('proPriceLabel'))$('proPriceLabel').textContent=cfg.proPriceLabel;
+  if($('proPriceNote'))$('proPriceNote').textContent=cfg.proPriceNote;
+
+  const buy=$('buyPro');
+  if(buy){
+    if(cfg.proPaymentLink){
+      buy.href=cfg.proPaymentLink;
+      buy.target='_blank';
+      buy.rel='noopener noreferrer';
+      buy.addEventListener('click',()=>{if(!isPro())toast('Opening secure checkout…')});
+    }else{
+      buy.href='#pricing';
+      buy.addEventListener('click',e=>{
+        if(isPro()){e.preventDefault();return}
+        e.preventDefault();
+        document.querySelector('.unlock-panel')?.scrollIntoView({behavior:'smooth'});
+        toast('Add your Stripe Payment Link in monetize-config.js, or enter an unlock code');
+      });
+    }
+  }
+
+  $('restorePro')?.addEventListener('click',()=>{
+    document.querySelector('.unlock-panel')?.scrollIntoView({behavior:'smooth'});
+    $('proUnlockInput')?.focus();
+  });
+  $('applyProUnlock')?.addEventListener('click',()=>unlockProFromCode($('proUnlockInput')?.value));
+  $('proUnlockInput')?.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();unlockProFromCode($('proUnlockInput').value)}
+  });
+
+  const tutoring=$('tutoringCta');
+  if(tutoring){
+    if(cfg.tutoringUrl){
+      tutoring.href=cfg.tutoringUrl;
+      tutoring.target='_blank';
+      tutoring.rel='noopener noreferrer';
+      tutoring.textContent=cfg.tutoringLabel||'Book a session';
+    }else{
+      tutoring.href='#pricing';
+      tutoring.textContent='Add Calendly / booking URL in config';
+      tutoring.addEventListener('click',e=>{e.preventDefault();toast('Set tutoringUrl in monetize-config.js')});
+    }
+  }
+
+  const b2b=$('b2bCta');
+  if(b2b){
+    if(cfg.b2bEmail){
+      b2b.href=`mailto:${encodeURIComponent(cfg.b2bEmail)}?subject=${encodeURIComponent(cfg.b2bSubject||'Tutor license')}`;
+      b2b.textContent='Email for license info';
+    }else{
+      b2b.href='#pricing';
+      b2b.textContent='Add b2bEmail in config';
+      b2b.addEventListener('click',e=>{e.preventDefault();toast('Set b2bEmail in monetize-config.js')});
+    }
+  }
+
+  const list=$('affiliateList');
+  if(list){
+    const items=cfg.affiliates||[];
+    list.innerHTML=items.length
+      ?items.map(a=>`<li><a href="${escapeHtml(a.url)}" target="_blank" rel="noopener noreferrer sponsored">${escapeHtml(a.name)}</a> — ${escapeHtml(a.note||'')}</li>`).join('')
+      :'<li class="hint">Add companion links in monetize-config.js</li>';
+  }
+
+  $('printMethodGuide')?.addEventListener('click',()=>printSection('methodGuide'));
+  $('printProKit')?.addEventListener('click',()=>{updateProKitFocus();printSection('proKit')});
+  $('exportMissCsv')?.addEventListener('click',exportMissCsv);
+  $('coachShare')?.addEventListener('click',coachShareSnapshot);
+
+  captureProReturn();
+  applyProUi();
+}
+
 renderLog();
 initMissPatterns();
+wireMonetize();
