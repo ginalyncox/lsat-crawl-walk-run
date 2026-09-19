@@ -591,14 +591,11 @@ function scrollToAid(sectionId,focusId){
     if(el)setTimeout(()=>el.focus(),250);
   }
 }
-function openAutopsyAid(prefill){
-  if(prefill?.label&&$('practiceLabel')&&!$('practiceLabel').value.trim()){
-    $('practiceLabel').value=prefill.label;
-  }
+function openAutopsyAid(){
   scrollToAid('framework','job');
 }
 function openDetectiveAid(prefill={}){
-  if(prefill.miss&&$('missType'))$('missType').value=prefill.miss;
+  if(prefill.miss&&$('missType')&&!$('missType').value.trim())$('missType').value=prefill.miss;
   if(prefill.note&&$('fooled')&&!$('fooled').value.trim())$('fooled').value=prefill.note;
   if(prefill.blindNote&&$('overlooked')&&!$('overlooked').value.trim())$('overlooked').value=prefill.blindNote;
   if(prefill.label&&$('attractive')&&!$('attractive').value.trim()){
