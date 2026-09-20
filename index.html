@@ -14,6 +14,10 @@
       <p class="eyebrow">ADHD-PI + aphantasia friendly</p>
       <h1>LSAT <span>Crawl • Walk • Run</span></h1>
       <p class="lede">Understand the job. Externalize the reasoning. Prove the answer. Then add speed.</p>
+      <div class="hero-cta no-print">
+        <a class="primary" href="#pricing" style="text-decoration:none;display:inline-block">Get Pro · study kit &amp; coach tools</a>
+        <a class="ghost" href="#practiceSession" style="text-decoration:none;display:inline-block;padding:.7rem 1rem;border:2px solid var(--ink);border-radius:9px;font-weight:800">Start free practice</a>
+      </div>
     </div>
     <div class="reset-card" aria-label="Core reset">
       <strong>RIGHT NOW:</strong>
@@ -46,6 +50,7 @@
     <a href="#mistakeDetective">Mistake Detective</a>
     <a href="#missPatterns">Miss Patterns</a>
     <a href="#errorLogSection">Error Log</a>
+    <a href="#pricing">Pro &amp; support</a>
   </nav>
 
   <main id="main">
@@ -602,6 +607,7 @@
             </select>
           </label>
           <button type="button" id="printMissPatterns" class="ghost">Print Board</button>
+          <button type="button" id="exportMissCsv" class="ghost" hidden>Export CSV</button>
         </div>
       </div>
       <div id="missPatternFocus" class="miss-focus" aria-live="polite"></div>
@@ -617,14 +623,160 @@
           <button type="button" id="importData" class="ghost">Import data</button>
           <input id="importFile" type="file" accept="application/json,.json" hidden />
           <button type="button" id="clearLog" class="ghost">Clear log</button>
+          <button type="button" id="coachShare" class="ghost" hidden>Coach share</button>
         </div>
       </div>
       <div id="errorLog" class="error-log"></div>
     </section>
+
+    <section class="panel study-aid" id="methodGuide" aria-labelledby="methodGuideTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Named method · ADHD-PI + aphantasia</p>
+          <h2 id="methodGuideTitle">Crawl → Walk → Run method card</h2>
+          <p class="hint">Free overview. Pro unlocks the printable study kit pack and coach-share tools.</p>
+        </div>
+        <div class="button-row compact no-print">
+          <button type="button" id="printMethodGuide" class="ghost">Print method card</button>
+        </div>
+      </div>
+      <div class="method-guide">
+        <article>
+          <h3>CRAWL — learn it</h3>
+          <p>No speed. One question. Externalize JOB → GIVEN → CONCLUSION → GAP → TARGET before A–E.</p>
+        </article>
+        <article>
+          <h3>WALK — repeat it</h3>
+          <p>Same process until it is boring. Blind-review misses. Turn each miss into one next-time rule.</p>
+        </article>
+        <article>
+          <h3>RUN — perform it</h3>
+          <p>Add the clock only after the process is repeatable. Compare untimed → timed. Protect the reset questions.</p>
+        </article>
+        <div class="method-resets">
+          <p><strong>Reset 1:</strong> What is my job RIGHT NOW?</p>
+          <p><strong>Reset 2:</strong> Where does it say that?</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel study-aid pro-only" id="proKit" aria-labelledby="proKitTitle" hidden>
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Pro study kit</p>
+          <h2 id="proKitTitle">Printable pack cover</h2>
+          <p class="hint">Print this cover, then print Decision Mat, Trap Deck, Translations, Session Sheet, and Test-Day Reset from the free tools.</p>
+        </div>
+        <div class="button-row compact no-print">
+          <button type="button" id="printProKit" class="primary">Print kit cover</button>
+        </div>
+      </div>
+      <div class="pro-kit-cover">
+        <h3>LSAT Crawl • Walk • Run — Study Kit</h3>
+        <p>ADHD-PI + aphantasia friendly. Accuracy → repeatability → speed.</p>
+        <ol>
+          <li>Decision Mat — name the JOB before choices</li>
+          <li>Argument Autopsy — externalize the gap</li>
+          <li>Trap Deck — name why wrong answers tempt</li>
+          <li>Session Sheet — one question on paper</li>
+          <li>Mistake Detective — one next-time rule</li>
+          <li>Test-Day Reset — pocket card</li>
+        </ol>
+        <p class="pro-kit-focus" id="proKitFocus">Today’s focus loads from your Miss Pattern Board.</p>
+      </div>
+    </section>
+
+    <section class="panel monetize no-print" id="pricing" aria-labelledby="pricingTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Support the system</p>
+          <h2 id="pricingTitle">Free toolkit · Pro pack · tutoring · tutor license</h2>
+          <p class="hint">Core study tools stay free on this page. Paid options fund the ADHD / aphantasia niche build-out.</p>
+        </div>
+        <p id="proStatusBadge" class="pro-badge" hidden>Pro unlocked</p>
+      </div>
+
+      <div class="price-grid">
+        <article class="price-card">
+          <p class="eyebrow">Forever free</p>
+          <h3>Core toolkit</h3>
+          <p class="price-amount">$0</p>
+          <ul>
+            <li>Argument Autopsy, Decision Mat, Trap Deck</li>
+            <li>Practice sessions, miss queues, Mistake Detective</li>
+            <li>Printable aids + local save / export</li>
+          </ul>
+          <a class="ghost" href="#practiceSession">Start practicing</a>
+        </article>
+
+        <article class="price-card featured" id="proCard">
+          <p class="eyebrow">One-time</p>
+          <h3>Pro companion</h3>
+          <p class="price-amount" id="proPriceLabel">$39</p>
+          <p class="hint" id="proPriceNote">one-time · full LSAT cycle</p>
+          <ul>
+            <li>Printable study kit cover + method card pack</li>
+            <li>Coach-share snapshot of your logs</li>
+            <li>Richer miss analytics + CSV export</li>
+            <li>Multi-device via export/import backup</li>
+          </ul>
+          <div class="button-row compact">
+            <a class="primary" id="buyPro" href="#pricing">Unlock Pro</a>
+            <button type="button" class="ghost" id="restorePro">Enter unlock code</button>
+          </div>
+          <p class="hint" id="proCheckoutHint">Connect a Stripe Payment Link in <code>monetize-config.js</code> to enable checkout.</p>
+        </article>
+
+        <article class="price-card">
+          <p class="eyebrow">High-touch</p>
+          <h3>Tutoring / cohort</h3>
+          <p class="price-amount">Sessions</p>
+          <ul>
+            <li>Use this app as the live worksheet</li>
+            <li>1:1 or small Crawl → Walk groups</li>
+            <li>Miss-pattern coaching from your logs</li>
+          </ul>
+          <a class="ghost" id="tutoringCta" href="#pricing">Set booking link</a>
+        </article>
+
+        <article class="price-card">
+          <p class="eyebrow">B2B</p>
+          <h3>Tutor / program license</h3>
+          <p class="price-amount">Email</p>
+          <ul>
+            <li>Printable kits for small programs</li>
+            <li>Shared error-log / miss-pattern workflow</li>
+            <li>Independent tool — not affiliated with LSAC</li>
+          </ul>
+          <a class="ghost" id="b2bCta" href="#pricing">Request license info</a>
+        </article>
+      </div>
+
+      <div class="affiliate-block" id="affiliates">
+        <h3>Companion resources</h3>
+        <p class="hint">Some links may be affiliate links. If you buy through them, a commission may support this free toolkit — at no extra cost to you. Always buy official PrepTests from LSAC.</p>
+        <ul id="affiliateList"></ul>
+      </div>
+
+      <details class="unlock-panel">
+        <summary>Already purchased? Restore Pro on this device</summary>
+        <div class="button-row compact" style="margin-top:.7rem">
+          <label class="inline-label">Unlock code
+            <input id="proUnlockInput" type="text" autocomplete="off" placeholder="e.g. CRAWL-PRO" />
+          </label>
+          <button type="button" id="applyProUnlock" class="primary">Unlock</button>
+        </div>
+      </details>
+    </section>
   </main>
 
-  <footer><strong>Accuracy → repeatability → speed.</strong><span>CRAWL → WALK → RUN</span><small>Independent study tool. Not affiliated with LSAC.</small></footer>
+  <footer>
+    <strong>Accuracy → repeatability → speed.</strong>
+    <span>CRAWL → WALK → RUN</span>
+    <small>Independent study tool. Not affiliated with LSAC. <a href="#pricing">Pro &amp; support</a></small>
+  </footer>
   <div id="toast" role="status" aria-live="polite"></div>
+  <script src="monetize-config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

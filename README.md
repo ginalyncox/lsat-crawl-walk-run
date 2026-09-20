@@ -43,6 +43,12 @@ Two reset questions run through the app: **What is my job RIGHT NOW?** and **Whe
 - Responsive, keyboard-friendly, low-clutter interface
 - Print stylesheet for worksheets and study cards
 
+## Monetization
+
+Core toolkit stays free. Optional Pro / tutoring / B2B / affiliates are configured in `monetize-config.js`.
+
+See [docs/MONETIZE.md](docs/MONETIZE.md) to connect a Stripe Payment Link, booking URL, and unlock codes.
+
 ## Run locally
 
 No build step or dependencies are required. Open `index.html` in a browser, or serve the directory with any static file server.
@@ -58,7 +64,9 @@ No build step or dependencies are required. Open `index.html` in a browser, or s
 
 ## Roadmap
 
-Next candidates include richer multi-device sync only if a concrete need appears.
+- Stripe Payment Link live for Pro one-time checkout
+- Optional signed unlock codes via a tiny webhook later
+- Richer multi-device sync only if a concrete need appears
 
 ## Disclaimer
 
