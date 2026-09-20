@@ -55,6 +55,7 @@
         <h2 id="phaseTitle">CRAWL: Learn the reasoning</h2>
         <p id="phaseText">No speed pressure. Do one question carefully and explain why every answer is right or wrong.</p>
         <p id="todayFocus" class="today-focus hint">Log a few misses to unlock today’s focus from the Miss Pattern Board.</p>
+        <p class="hint">Practice uses tools already here: Decision Mat → Autopsy → Trap Deck → Mistake Detective.</p>
       </div>
       <div class="today-actions no-print">
         <button type="button" id="oneQuestion" class="primary">Start 1-question session</button>
@@ -99,12 +100,13 @@
       </div>
 
       <div id="practiceIdle" class="practice-idle">
+        <p class="hint">Practice with tools already on this page — your PrepTest + these worksheets.</p>
         <ol class="practice-steps-preview">
-          <li>Name the JOB</li>
-          <li>Fill JOB → GIVEN → CONCLUSION → GAP → TARGET</li>
-          <li>Eliminate A–E</li>
-          <li>Write why the credited answer works</li>
-          <li>Log a next-time rule if you missed</li>
+          <li>Name the JOB with the <a href="#decisionMat">Decision Mat</a></li>
+          <li>Fill <a href="#framework">Argument Autopsy</a> (JOB → GIVEN → CONCLUSION → GAP → TARGET)</li>
+          <li>Eliminate A–E; check traps on the <a href="#trapDeck">Trap Deck</a></li>
+          <li>Write why the credited answer works (Autopsy)</li>
+          <li>Log a next-time rule in <a href="#mistakeDetective">Mistake Detective</a> if you missed</li>
         </ol>
       </div>
 
@@ -114,13 +116,22 @@
           <p id="practiceTimer" class="practice-timer" aria-live="polite"></p>
           <button type="button" id="endPractice" class="ghost no-print">End session</button>
         </div>
+        <nav class="practice-kit no-print" aria-label="Tools already in this app">
+          <a href="#decisionMat">Decision Mat</a>
+          <a href="#framework">Autopsy</a>
+          <a href="#trapDeck">Trap Deck</a>
+          <a href="#translationDict">Translations</a>
+          <a href="#studyCards">Study Cards</a>
+          <a href="#sessionSheet">Session Sheet</a>
+          <a href="#mistakeDetective">Mistake Detective</a>
+        </nav>
         <div id="practiceActiveForm">
           <div class="practice-checklist" id="practiceChecklist">
-            <label><input type="checkbox" data-step="job"/> Name the JOB</label>
-            <label><input type="checkbox" data-step="autopsy"/> Fill autopsy fields</label>
-            <label><input type="checkbox" data-step="eliminate"/> Eliminate A–E</label>
-            <label><input type="checkbox" data-step="credited"/> Credited answer / why</label>
-            <label><input type="checkbox" data-step="rule"/> Next-time rule if needed</label>
+            <label><input type="checkbox" data-step="job"/> <span>Name the JOB — <a href="#decisionMat" class="practice-aid-link">Decision Mat</a></span></label>
+            <label><input type="checkbox" data-step="autopsy"/> <span>Fill autopsy — <a href="#framework" class="practice-aid-link">Open Autopsy</a></span></label>
+            <label><input type="checkbox" data-step="eliminate"/> <span>Eliminate A–E — <a href="#trapDeck" class="practice-aid-link">Trap Deck</a></span></label>
+            <label><input type="checkbox" data-step="credited"/> <span>Credited why — <a href="#framework" class="practice-aid-link">Autopsy</a></span></label>
+            <label><input type="checkbox" data-step="rule"/> <span>Next-time rule — <a href="#mistakeDetective" class="practice-aid-link">Mistake Detective</a></span></label>
           </div>
           <div class="practice-result two-col tight">
             <label for="practiceResult">Result
@@ -150,20 +161,23 @@
           <p class="eyebrow">Blind review gate</p>
           <p class="hint" id="practiceBlindPrompt">Before saving a miss/flag, re-check the reasoning without leaning on memory of the choice.</p>
           <div class="practice-checklist" id="practiceBlindChecklist">
-            <label><input type="checkbox" data-blind="rejob"/> Re-state the JOB in one phrase</label>
-            <label><input type="checkbox" data-blind="gap"/> Name the GAP without looking at choices</label>
+            <label><input type="checkbox" data-blind="rejob"/> <span>Re-state the JOB — <a href="#decisionMat" class="practice-aid-link">Decision Mat</a></span></label>
+            <label><input type="checkbox" data-blind="gap"/> <span>Name the GAP — <a href="#framework" class="practice-aid-link">Autopsy</a></span></label>
             <label><input type="checkbox" data-blind="predict"/> Predict what the credited answer must do</label>
-            <label><input type="checkbox" data-blind="trap"/> Name the trap that fooled you (if any)</label>
+            <label><input type="checkbox" data-blind="trap"/> <span>Name the trap — <a href="#trapDeck" class="practice-aid-link">Trap Deck</a></span></label>
           </div>
           <label class="wide"><b>Blind-review note</b><textarea id="practiceBlindNote" placeholder="What changed when you reviewed blind?"></textarea></label>
           <div class="button-row no-print">
             <button type="button" id="cancelBlindReview" class="ghost">Back</button>
+            <button type="button" id="openDetectiveFromBlind" class="ghost">Open Mistake Detective</button>
             <button type="button" id="confirmBlindReview" class="primary">Finish &amp; continue</button>
           </div>
         </div>
 
         <div class="button-row no-print" id="practiceActiveActions">
           <button type="button" id="openAutopsy" class="ghost">Open autopsy</button>
+          <button type="button" id="openDecisionMat" class="ghost">Decision Mat</button>
+          <button type="button" id="openDetective" class="ghost">Mistake Detective</button>
           <button type="button" id="flagPractice" class="ghost">Flag &amp; continue</button>
           <button type="button" id="completePracticeQ" class="primary">Save &amp; next</button>
         </div>
